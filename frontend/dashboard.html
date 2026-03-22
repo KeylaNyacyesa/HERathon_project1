@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>HERathon Dashboard</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <h1>HERathon</h1>
+
+    <section id="dashboard" class="card dashboard">
+      <h2>Dashboard</h2>
+      <p>Logged in as <span id="currentRole"></span></p>
+
+      <div class="dashboard-columns">
+        <div>
+          <h3>Challenges</h3>
+          <button onclick="getChallenges()">Load Challenges</button>
+          <ul id="challengeList"></ul>
+        </div>
+
+        <div>
+          <h3>Teams</h3>
+          <button onclick="getTeams()">Load Teams</button>
+          <ul id="teamList"></ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
+

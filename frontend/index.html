@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>HERathon</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="app">
+    <h1>HERathon</h1>
+
+    <div class="cards">
+      <section class="card">
+        <h2>Create your account</h2>
+
+        <label>
+          Name
+          <input id="name" placeholder="Name" />
+        </label>
+
+        <label>
+          Email
+          <input id="email" placeholder="Email" />
+        </label>
+
+        <label>
+          Password
+          <input id="password" type="password" placeholder="Password" />
+        </label>
+
+        <label>
+          Confirm password
+          <input id="passwordConfirm" type="password" placeholder="Confirm password" />
+        </label>
+
+        <label>
+          What best describes you?
+          <select id="role">
+            <option value="student">Student</option>
+            <option value="mentor">Mentor</option>
+          </select>
+        </label>
+
+        <button onclick="register()">Register</button>
+        <p id="status" class="status status-register"></p>
+      </section>
+
+      <section class="card">
+        <h2>Login</h2>
+
+        <label>
+          Email
+          <input id="loginEmail" placeholder="Email" />
+        </label>
+
+        <label>
+          Password
+          <input id="loginPassword" type="password" placeholder="Password" />
+        </label>
+
+        <button onclick="login()">Login</button>
+        <p id="loginStatus" class="status status-login"></p>
+      </section>
+    </div>
+
+    <section id="dashboard" class="card dashboard" style="display:none;">
+      <h2>Dashboard</h2>
+      <p>Logged in as <span id="currentRole"></span></p>
+
+      <div class="dashboard-columns">
+        <div>
+          <h3>Challenges</h3>
+          <button onclick="getChallenges()">Load Challenges</button>
+          <ul id="challengeList"></ul>
+        </div>
+
+        <div>
+          <h3>Teams</h3>
+          <button onclick="getTeams()">Load Teams</button>
+          <ul id="teamList"></ul>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
