@@ -1,48 +1,61 @@
-// shared-nav.js — injects the global header on every page
+// shared-nav.js
 (function () {
-  const currentPage = window.location.pathname.split('/').pop() || 'index.html';
+  let currentPage = window.location.pathname.split("/").pop() || "index.html";
+  if (currentPage === "") currentPage = "index.html";
 
-  const navLinks = [
-    { href: 'dashboard.html', label: '🗺️ Hub', id: 'dashboard.html' },
-    { href: 'challenges.html', label: '⚔️ Challenges', id: 'challenges.html' },
-    { href: 'teams.html', label: '👥 Teams', id: 'teams.html' },
-    { href: 'mentorship.html', label: '🧠 Mentorship', id: 'mentorship.html' },
-    { href: 'scholarships.html', label: '🎓 Scholarships', id: 'scholarships.html' },
+  // Quick check to see if we are running in an environment that requires .html
+  const isLocalHtml = window.location.pathname.endsWith(".html") || window.location.protocol === "file:" || window.location.hostname === "127.0.0.1" || window.location.hostname === "localhost" || window.location.port !== "";
+  
+  function getLink(page) {
+    if (page === "index" || page === "index.html") return isLocalHtml ? "index.html" : "/";
+    return isLocalHtml ? page + ".html" : "/" + page;
+  }
+
+  const userStr = localStorage.getItem("user");
+  const user = userStr ? JSON.parse(userStr) : null;
+  const userRole = user ? (user.role || "student") : "student";
+
+  let navLinks = [
+    { page: "dashboard", label: "🗺️ Hub" },
+    { page: "challenges", label: "⚔️ Challenges" },
+    { page: "teams", label: "👥 Teams" }
   ];
 
-  const isLoggedIn = !!localStorage.getItem('token');
-  const userStr = localStorage.getItem('user');
-  const user = userStr ? JSON.parse(userStr) : null;
+  if (userRole === "student") {
+      navLinks.push({ page: "mentorship", label: "🧠 Mentorship" });
+  }
+  
+  navLinks.push({ page: "scholarships", label: "🎓 Scholarships" });
 
-  // Skip nav on auth page
-  if (currentPage === 'index.html' || currentPage === '') return;
+  if (currentPage === "index.html" || currentPage === "index") return;
 
-  // Build header HTML
-  const navLinksHtml = navLinks.map(l =>
-    `<a href="${l.href}" class="${currentPage === l.id ? 'active' : ''}">${l.label}</a>`
-  ).join('');
+  const navLinksHtml = navLinks.map(l => {
+    // Treat active class logic inclusively
+    const isActive = currentPage === l.page || currentPage === l.page + ".html" || currentPage === l.page + "/";
+    return `<a href="${getLink(l.page)}" class="${isActive ? "active" : ""}">${l.label}</a>`;
+  }).join("");
 
   const mobileLinksHtml = navLinks.map(l =>
-    `<a href="${l.href}">${l.label}</a>`
-  ).join('');
+    `<a href="${getLink(l.page)}">${l.label}</a>`
+  ).join("");
 
-  const avatarLetter = user?.name ? user.name.charAt(0).toUpperCase() : '?';
-  const userName = user?.name || 'Profile';
+  const avatarLetter = user && user.name ? user.name.charAt(0).toUpperCase() : "?";
+  const userName = user && user.name ? user.name : "Profile";
 
   const headerHtml = `
     <header class="top-header" id="globalHeader">
-      <a href="dashboard.html" class="header-brand">
+      <a href="${getLink("dashboard")}" class="header-brand">
         🎮 <span>HERathon</span>
       </a>
-      <nav class="header-nav" aria-label="Main navigation">
+      <nav class="header-nav" aria-label="Main navigation" style="display:flex; align-items:center; gap:0.5rem; justify-content: flex-start; flex:1; margin-left: 2rem;">
         ${navLinksHtml}
       </nav>
       <div class="header-actions">
-        <a href="profile.html" class="profile-pill">
+        <a href="${getLink("profile")}" class="profile-pill" style="text-decoration:none;">
           <span class="avatar-circle">${avatarLetter}</span>
           ${userName}
         </a>
-        <button class="btn-logout" onclick="sharedLogout()">Sign out</button>
+        <button class="btn-logout" onclick="sharedLogout()" style="padding: 0.45rem 1rem;">Sign out</button>
         <button class="nav-toggle" aria-label="Toggle menu" onclick="toggleMobileNav()">
           <span></span><span></span><span></span>
         </button>
@@ -50,20 +63,30 @@
     </header>
     <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
       ${mobileLinksHtml}
-      <a href="profile.html">👤 Profile</a>
-      <button onclick="sharedLogout()" style="color:#fca5a5;">🚪 Sign out</button>
+      <a href="${getLink("profile")}">👤 Profile</a>
+      <button onclick="sharedLogout()" style="color:#fca5a5; background:none; border:none; text-align:left; cursor:pointer;">🚪 Sign out</button>
     </nav>
   `;
 
-  // Insert before body content
-  document.body.insertAdjacentHTML('afterbegin', headerHtml);
+  try {
+    // Use requestAnimationFrame or setTimeout to ensure document body is ready.
+    if(document.body) {
+        document.body.insertAdjacentHTML("afterbegin", headerHtml);
+    } else {
+        window.addEventListener("DOMContentLoaded", () => {
+            document.body.insertAdjacentHTML("afterbegin", headerHtml);
+        });
+    }
+  } catch(e) {
+      console.error("Header insertion failed", e);
+  }
 
   window.toggleMobileNav = function () {
-    document.getElementById('mobileNav').classList.toggle('open');
+    document.getElementById("mobileNav").classList.toggle("open");
   };
 
   window.sharedLogout = function () {
     localStorage.clear();
-    window.location.href = 'index.html';
+    window.location.href = getLink("index");
   };
 })();
