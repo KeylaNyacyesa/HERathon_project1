@@ -63,22 +63,15 @@ router.post("/", async (req, res) => {
 
       finalDescription = answer;
       finalStatus = "Approved";
-      submission.projectLink = finalProjectLink;
-      submission.description = finalDescription;
-      submission.feedback = "";
-      submission.status = finalStatus;
-      if(finalStatus !== "Approved") submission.medal = "none";
-      await submission.save();
-    } else {
-      submission = new Submission({
-        userId: decoded.id,
-        challengeId,
-        projectLink: finalProjectLink,
-        description: finalDescription,
-        attempts: 1,
-        status: finalStatus,
-        medal: "none"
-      });
+    }
+
+    let submission = await Submission.findOne({
+      userId: decoded.id,
+      challengeId
+    }).populate("challengeId");
+
+    if (submission) {
+      submission.attempts += 1;
       await submission.save();
     }
 
