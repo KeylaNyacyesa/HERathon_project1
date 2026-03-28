@@ -96,7 +96,7 @@ a:hover { color: #818cf8; }
   justify-content: space-between;
   align-items: center;
   padding: 0 1.5rem;
-  height: var(--nav-h);
+  min-height: var(--nav-h);
   background: rgba(8, 15, 31, 0.85);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -105,11 +105,13 @@ a:hover { color: #818cf8; }
   top: 0;
   width: 100%;
   z-index: 200;
+  flex-wrap: nowrap;
 }
 
 .header-brand {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 0.6rem;
   font-family: var(--font-display);
   font-size: 1.3rem;
@@ -128,16 +130,18 @@ a:hover { color: #818cf8; }
 .header-actions {
   display: flex;
   align-items: center;
+  flex-shrink: 0;
   gap: 0.75rem;
 }
 
 .header-nav {
   display: flex;
   align-items: center;
-  gap: 0.25rem;
-}
-
-.header-nav a {
+  gap: 0.5rem;
+    justify-content: center;
+    flex: 1;
+    margin: 0 1rem;
+    flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none;
   padding: 0.45rem 0.85rem;
   border-radius: var(--radius-sm);
   font-size: 0.9rem;
