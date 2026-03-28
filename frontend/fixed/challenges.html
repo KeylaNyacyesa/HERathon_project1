@@ -277,24 +277,29 @@
         payload.description = description;
       }
 
-      const res = await fetch(`${API_URL}/submissions`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
-        body: JSON.stringify(payload)
-      });
+      try {
+        const res = await fetch(`${API_URL}/submissions`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
 
-      if (res.ok) {
         const data = await res.json();
-        if (data.autoGraded) {
-          showSuccess("Challenge auto-graded! You earned points 🌟");
+
+        if (res.ok) {
+          if (data.autoGraded) {
+            showSuccess("Challenge auto-graded! You earned points 🌟");
+          } else {
+            showSuccess("Submission sent! Awaiting mentor review ✨");
+          }
+          document.querySelector(".challenge-modal").remove();
+          loadChallenges();
+          loadPageGamification();
         } else {
-          showSuccess("Submission sent! Awaiting mentor review ✨");
+          showError(data.message || "Submission failed — please try again");
         }
-        document.querySelector(".challenge-modal").remove();
-        loadChallenges();
-        loadPageGamification();
-      } else {
-        showError("Submission failed — please try again");
+      } catch (err) {
+        showError("An error occurred. Please try again.");
       }
     }
   </script>

@@ -6,7 +6,8 @@ const ChallengeSchema = new mongoose.Schema({
  level: Number,
  deadline: String,
  course: { type: String, required: true },
- topic: { type: String, required: true }
+ topic: { type: String, required: true },
+ correctAnswer: { type: String }
 });
 
 module.exports = mongoose.model("Challenge", ChallengeSchema);

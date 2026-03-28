@@ -50,8 +50,17 @@ router.post("/", async (req, res) => {
     // Auto-grading for levels <= 3
     if (challenge && challenge.level <= 3 && isSimple) {
       if (!answer) return res.status(400).json({ message: "Answer required" });
-      finalStatus = "Approved"; // Automatically mark as approved
-      finalProjectLink = "Simple Answer";
+      
+      const isCorrect = answer.trim().toLowerCase() === (challenge.correctAnswer || "").trim().toLowerCase();
+      
+      if (!isCorrect) {
+        return res.status(400).json({ 
+          message: "Incorrect answer. Please try again!",
+          autoGraded: false,
+          isCorrect: false
+        });
+      }
+
       finalDescription = answer;
     }
 
