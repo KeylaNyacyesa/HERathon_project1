@@ -9,21 +9,21 @@ const User = require("../models/User");
 router.get("/", auth, async (req, res) => {
   try {
     if (req.user.role !== "mentor" && req.user.role !== "admin") {
-      const studentSubs = await Submission.find({ userId: req.user.id })
+      const studentSubs = await Submission.find({ userId: req.user.id })        
         .populate("userId", "name email")
         .populate("challengeId", "title level");
       return res.json(studentSubs);
     }
-    
+
     if (req.user.role === "mentor") {
       const Mentorship = require("../models/Mentorship");
       const activeMentorships = await Mentorship.find({
         mentorId: req.user.id,
-        status: "accepted" 
+        status: "accepted"
       });
       const menteeIds = activeMentorships.map(m => m.menteeId);
       
-      const submissions = await Submission.find({ userId: { $in: menteeIds } })
+      const submissions = await Submission.find({ userId: { $in: menteeIds } }) 
         .populate("userId", "name email")
         .populate("challengeId", "title level")
         .sort({ createdAt: -1 });
@@ -32,6 +32,17 @@ router.get("/", auth, async (req, res) => {
     }
 
     // Admin gets all
+    const submissions = await Submission.find()
+      .populate("userId", "name email")
+      .populate("challengeId", "title level")
+      .sort({ createdAt: -1 });
+
+    res.json(submissions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send("Server Error");
+  }
+});
 
 // @route   GET /submissions/my
 // @desc    Get current user's submissions
@@ -51,7 +62,7 @@ router.get("/my", auth, async (req, res) => {
 router.patch("/:id", auth, async (req, res) => {
   try {
     if (req.user.role !== "mentor" && req.user.role !== "admin") {
-      return res.status(403).json({ message: "Access denied. Mentors only." });
+      return res.status(403).json({ message: "Access denied. Mentors only." }); 
     }
 
     const { status, feedback } = req.body;
@@ -95,7 +106,7 @@ router.post("/", auth, async (req, res) => {
     if (isSimple) {
       // Auto-complete simple challenges
       const user = await User.findById(req.user.id);
-      
+
       if (!user.completedChallenges.includes(challengeId)) {
         user.points = (user.points || 0) + 50;
         user.level = Math.floor(user.points / 100) + 1;
@@ -122,7 +133,7 @@ router.post("/", auth, async (req, res) => {
       description: description,
       status: "Under Review"
     });
-    
+
     await submission.save();
     res.json({ message: "Submission successful!", autoGraded: false, submission });
   } catch (err) {
