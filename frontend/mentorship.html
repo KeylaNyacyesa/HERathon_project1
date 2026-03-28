@@ -22,19 +22,19 @@
     </div>
 
     <div class="dashboard-grid">
-      <!-- Mentors List -->
-      <div class="card" style="grid-column: span 2;">
-        <div class="card-title">🌟 Available Mentors</div>
+      <!-- Section 1 -->
+      <div class="card" style="grid-column: span 2;" id="mentorsListCard">
+        <div class="card-title" id="primaryCardTitle">🌟 Available Mentors</div>
         <div id="mentorsList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
-          <p style="color:var(--text-faint);">Loading mentors...</p>
+          <p style="color:var(--text-faint);">Loading...</p>
         </div>
       </div>
 
-      <!-- My Mentorships -->
-      <div class="card" style="grid-column: span 2;">
-        <div class="card-title">🤝 My Mentorships</div>
+      <!-- Section 2 -->
+      <div class="card" style="grid-column: span 2;" id="myMentorshipCard">
+        <div class="card-title" id="secondaryCardTitle">🤝 My Mentorships</div>
         <div id="myMentorships" style="display:flex; flex-direction:column; gap: 1rem;">
-          <p style="color:var(--text-faint);">Loading your mentorships...</p>
+          <p style="color:var(--text-faint);">Loading...</p>
         </div>
       </div>
     </div>
@@ -43,10 +43,22 @@
   <script src="toast.js"></script>
   <script>
     const API_URL = "https://herathonbackend.onrender.com";
+    let currentUser = null;
     
     window.onload = () => {
-      loadMentors();
-      loadMyMentorships();
+      const userStr = localStorage.getItem("user");
+      if (userStr) currentUser = JSON.parse(userStr);
+
+      if (!currentUser) return window.location.href = "index.html";
+
+      if (currentUser.role === "mentor") {
+        document.getElementById("primaryCardTitle").innerHTML = "🔔 Pending Requests";
+        document.getElementById("secondaryCardTitle").innerHTML = "👨‍🎓 My Students";
+        loadMyMentorships(); // this alone handles both pending and students for mentors
+      } else {
+        loadMentors();
+        loadMyMentorships();
+      }
     };
 
     async function loadMentors() {
@@ -80,11 +92,11 @@
           card.innerHTML = `
             <div style="display:flex; align-items:center; gap: 0.75rem; margin-bottom: 0.5rem;">
               <div class="avatar-circle" style="width:40px; height:40px; font-size:1.2rem; margin:0;">
-                ${mentor.name.charAt(0).toUpperCase()}
+                ${mentor.name ? mentor.name.charAt(0).toUpperCase() : "M"}
               </div>
               <h4 style="margin:0; font-size:1.1rem; color:var(--primary-light);">${mentor.name}</h4>
             </div>
-            <p style="margin:0 0 1rem; font-size:0.9rem; color:var(--text-muted); flex: 1;">${mentor.skills || "General STEM Guidance"}</p>
+            <p style="margin:0 0 1rem; font-size:0.9rem; color:var(--text-muted); flex: 1;">${mentor.skills && mentor.skills.length > 0 ? mentor.skills : "General STEM Guidance"}</p>
             <button class="btn-primary" style="width:100%; border-radius: var(--radius-pill); font-size: 0.9rem;" onclick="requestMentorship('${mentor._id}')">Request Mentor</button>
           `;
           list.appendChild(card);
@@ -100,47 +112,99 @@
         const res = await fetch(`${API_URL}/mentors/my-mentorships`, {
           headers: { Authorization: `Bearer ${token}` }
         });
-        const list = document.getElementById("myMentorships");
+        const list2 = document.getElementById("myMentorships");
         
         if (!res.ok) throw new Error("Failed to fetch");
         const mentorships = await res.json();
         
-        list.innerHTML = "";
-        if (mentorships.length === 0) {
-            list.innerHTML = "<p style='color:var(--text-muted);'>You have not requested any mentors yet.</p>";
-            return;
-        }
+        list2.innerHTML = "";
+        
+        if (currentUser.role === "mentor") {
+            const list1 = document.getElementById("mentorsList");
+            list1.innerHTML = "";
+            let pendingHTML = "";
+            let studentsHTML = "";
 
-        mentorships.forEach(m => {
-          const mName = m.mentorId ? m.mentorId.name : "Unknown Mentor";
-          const item = document.createElement("div");
-          item.style.padding = "1rem 1.5rem";
-          item.style.background = "var(--bg-dark)";
-          item.style.borderRadius = "var(--radius-sm)";
-          item.style.border = "1px solid var(--border-subtle)";
-          item.style.display = "flex";
-          item.style.justifyContent = "space-between";
-          item.style.alignItems = "center";
-          
-          item.innerHTML = `
-             <div style="display:flex; align-items:center; gap: 1rem;">
-               <div class="avatar-circle" style="width:36px; height:36px; font-size:1rem; margin:0; background:rgba(99, 102, 241, 0.2); color:var(--primary-light);">
-                 ${mName.charAt(0).toUpperCase()}
-               </div>
-               <div>
-                 <strong style="display:block; margin-bottom:0.15rem; color:var(--text-main);">${mName}</strong>
-                 <span style="font-size:0.85rem; color:var(--text-muted);">Status: 
-                    <span style="color:${m.status === 'accepted' ? '#86efac' : m.status === 'rejected' ? '#fca5a5' : '#fde047'}; font-weight:600;">
-                       ${m.status.toUpperCase()}
-                    </span>
-                 </span>
-               </div>
-             </div>
-          `;
-          list.appendChild(item);
-        });
+            mentorships.forEach(m => {
+               const studentName = m.menteeId ? m.menteeId.name : "Unknown Student";
+               const initial = studentName.charAt(0).toUpperCase();
+
+               if (m.status === 'pending') {
+                  pendingHTML += `
+                    <div style="padding:1rem 1.5rem; background:var(--bg-dark); border-radius:var(--radius-sm); border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap: 1rem;">
+                       <div style="display:flex; align-items:center; gap:1rem;">
+                         <div class="avatar-circle" style="width:36px; height:36px; font-size:1rem; margin:0;">${initial}</div>
+                         <div>
+                            <strong style="display:block; color:var(--text-main);">${studentName}</strong>
+                            <span style="font-size:0.85rem; color:var(--text-muted);">Wants you to be their mentor</span>
+                         </div>
+                       </div>
+                       <div style="display:flex; gap:0.5rem;">
+                         <button onclick="updateRequestStatus('${m._id}', 'accepted')" class="btn-success" style="padding:0.4rem 0.8rem; font-size:0.85rem; width:auto; border-radius:var(--radius-pill);">Accept</button>
+                         <button onclick="updateRequestStatus('${m._id}', 'rejected')" class="btn-danger" style="padding:0.4rem 0.8rem; font-size:0.85rem; width:auto; border-radius:var(--radius-pill);">Decline</button>
+                       </div>
+                    </div>
+                  `;
+               } else if (m.status === 'accepted') {
+                  studentsHTML += `
+                    <div style="padding:1rem 1.5rem; background:var(--bg-dark); border-radius:var(--radius-sm); border:1px solid var(--border-subtle); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem;">
+                       <div style="display:flex; align-items:center; gap:1rem;">
+                         <div class="avatar-circle" style="width:36px; height:36px; font-size:1rem; margin:0;">${initial}</div>
+                         <div>
+                            <strong style="display:block; color:var(--text-main);">${studentName}</strong>
+                            <span style="font-size:0.85rem; color:#86efac; font-weight:600;">ACTIVE STUDENT</span>
+                         </div>
+                       </div>
+                       <button class="btn-secondary" style="padding:0.4rem 0.8rem; font-size:0.85rem; width:auto; border-radius:var(--radius-pill);" onclick="window.location.href='submissions.html'">Review Submissions</button>
+                    </div>
+                  `;
+               }
+            });
+
+            if (pendingHTML === "") list1.innerHTML = "<p style='color:var(--text-muted);'>No pending requests right now.</p>";
+            else list1.innerHTML = `<div style="display:flex; flex-direction:column; gap:1rem;">${pendingHTML}</div>`;
+
+            if (studentsHTML === "") list2.innerHTML = "<p style='color:var(--text-muted);'>You don't have any active students yet.</p>";
+            else list2.innerHTML = studentsHTML;
+
+        } else {
+            // Student View
+            if (mentorships.length === 0) {
+                list2.innerHTML = "<p style='color:var(--text-muted);'>You have not requested any mentors yet.</p>";
+                return;
+            }
+
+            mentorships.forEach(m => {
+              const mName = m.mentorId ? m.mentorId.name : "Unknown Mentor";
+              const item = document.createElement("div");
+              item.style.padding = "1rem 1.5rem";
+              item.style.background = "var(--bg-dark)";
+              item.style.borderRadius = "var(--radius-sm)";
+              item.style.border = "1px solid var(--border-subtle)";
+              item.style.display = "flex";
+              item.style.justifyContent = "space-between";
+              item.style.alignItems = "center";
+              
+              item.innerHTML = `
+                 <div style="display:flex; align-items:center; gap: 1rem;">
+                   <div class="avatar-circle" style="width:36px; height:36px; font-size:1rem; margin:0; background:rgba(99, 102, 241, 0.2); color:var(--primary-light);">
+                     ${mName.charAt(0).toUpperCase()}
+                   </div>
+                   <div>
+                     <strong style="display:block; margin-bottom:0.15rem; color:var(--text-main);">${mName}</strong>
+                     <span style="font-size:0.85rem; color:var(--text-muted);">Status: 
+                        <span style="color:${m.status === 'accepted' ? '#86efac' : m.status === 'rejected' ? '#fca5a5' : '#fde047'}; font-weight:600;">
+                           ${(m.status || 'pending').toUpperCase()}
+                        </span>
+                     </span>
+                   </div>
+                 </div>
+              `;
+              list2.appendChild(item);
+            });
+        }
       } catch (err) {
-        document.getElementById("myMentorships").innerHTML = "<p style='color:#fca5a5;'>Failed to load mentorship requests.</p>";
+        document.getElementById("myMentorships").innerHTML = "<p style='color:#fca5a5;'>Failed to load mentorships.</p>";
       }
     }
 
@@ -164,6 +228,29 @@
         }
       } catch (err) {
           showError("Error connecting to server.");
+      }
+    }
+
+    async function updateRequestStatus(requestId, status) {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API_URL}/mentors/request/${requestId}/status`, {
+          method: "PUT",
+          headers: {
+             "Content-Type": "application/json",
+             Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ status })
+        });
+
+        if (res.ok) {
+          showSuccess(`Request ${status} successfully!`);
+          loadMyMentorships();
+        } else {
+          showError("Failed to update status.");
+        }
+      } catch (err) {
+         showError("Error connecting to server.");
       }
     }
   </script>
