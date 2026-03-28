@@ -15,18 +15,23 @@ router.get("/", auth, async (req, res) => {
       return res.json(studentSubs);
     }
     
-    // Mentor or Admin gets all
-    const submissions = await Submission.find()
-      .populate("userId", "name email")
-      .populate("challengeId", "title level")
-      .sort({ createdAt: -1 });
-    
-    res.json(submissions);
-  } catch (err) {
-    console.error(err);
-    res.status(500).send("Server Error");
-  }
-});
+    if (req.user.role === "mentor") {
+      const Mentorship = require("../models/Mentorship");
+      const activeMentorships = await Mentorship.find({
+        mentorId: req.user.id,
+        status: "accepted" 
+      });
+      const menteeIds = activeMentorships.map(m => m.menteeId);
+      
+      const submissions = await Submission.find({ userId: { $in: menteeIds } })
+        .populate("userId", "name email")
+        .populate("challengeId", "title level")
+        .sort({ createdAt: -1 });
+
+      return res.json(submissions);
+    }
+
+    // Admin gets all
 
 // @route   GET /submissions/my
 // @desc    Get current user's submissions
