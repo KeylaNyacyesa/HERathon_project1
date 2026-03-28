@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const Submission = require("../models/Submission");
 const User = require("../models/User");
+const Challenge = require("../models/Challenge");
+const Challenge = require("../models/Challenge");
 const jwt = require("jsonwebtoken");
 
 // GET /submissions - All submissions for mentor/admin review (?status=Under Review)
