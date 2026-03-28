@@ -12,10 +12,11 @@ module.exports = async function(req, res, next) {
 
   try {
     // Verify token
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || "herathon_secret");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
     
     // We fetch user from database to ensure fresh role and state
-    const user = await User.findById(decoded.user.id).select("-password");
+    const userId = decoded.id || (decoded.user && decoded.user.id);
+    const user = await User.findById(userId).select("-password");
     if (!user) {
       return res.status(401).json({ message: "Token is valid but user no longer exists" });
     }
@@ -29,6 +30,7 @@ module.exports = async function(req, res, next) {
 
     next();
   } catch (err) {
+    console.error("Auth middleware error:", err.message);
     res.status(403).json({ message: "Token is not valid" });
   }
 };
