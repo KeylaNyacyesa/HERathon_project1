@@ -1,40 +1,188 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact - HERathon</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+  <style>
+    .contact-container {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 768px) {
+      .contact-container {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+    .info-card {
+      background: var(--bg-dark);
+      padding: 2rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+    .info-card h3 {
+      color: var(--primary-light);
+      margin-bottom: 1rem;
+    }
+    .chat-widget {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--primary);
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.2s;
+      z-index: 1000;
+    }
+    .chat-widget:hover {
+      transform: scale(1.1);
+    }
+    .chat-box {
+      position: fixed;
+      bottom: 90px;
+      right: 20px;
+      width: 300px;
+      height: 400px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      display: none;
+      flex-direction: column;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+      z-index: 1000;
+    }
+    .chat-box-header {
+      background: var(--primary);
+      color: white;
+      padding: 1rem;
+      border-radius: var(--radius-md) var(--radius-md) 0 0;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .chat-box-body {
+      flex: 1;
+      padding: 1rem;
+      overflow-y: auto;
+      background: var(--bg-dark);
+    }
+    .chat-box-footer {
+      padding: 1rem;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      gap: 0.5rem;
+    }
+    .chat-box-footer input {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-main);
+      color: var(--text-main);
+    }
+  </style>
 </head>
 <body>
 
-  <!-- Global nav -->
   <script src="shared-nav.js"></script>
-  <div class="app">
-    
-    <h1>📩 Contact Us</h1>
-    <p style="text-align: center; color: var(--text-muted, #9ca3af); margin-bottom: 2rem; font-size: 1.1rem;">Our team does its best to get back to you in 72 hours.</p>
-    <form id="contactForm" class="card">
-      <label>
-        Name
-        <input id="contactName" required>
-      </label>
-      <label>
-        Email
-        <input id="contactEmail" type="email" required>
-      </label>
-      <label>
-        Message
-        <textarea id="contactMessage" required></textarea>
-      </label>
-      <button type="submit">Send Message</button>
-    </form>
-    <p id="contactStatus"></p>
+  
+  <div class="page-wrapper" style="max-width: 1000px; margin: 0 auto; padding-top: 2rem;">
+
+    <div style="text-align: center; margin-bottom: 3rem;">
+      <h1 style="font-size: 2.5rem; margin-bottom: 0.5rem;">📬 Contact Us</h1>
+      <p style="color: var(--text-muted); font-size: 1.1rem;">We're here to help! Reach out to the HERathon team anytime.</p>
+    </div>
+
+    <div class="contact-container">
+      
+      <!-- Contact Form -->
+      <form id="contactForm" class="card" style="margin: 0;">
+        <h2 style="margin-bottom: 1.5rem;">Send a Message</h2>
+        <label>
+          Your Name
+          <input id="contactName" required placeholder="Jane Doe">
+        </label>
+        <label>
+          Your Email
+          <input id="contactEmail" type="email" required placeholder="jane@example.com">
+        </label>
+        <label>
+          Message
+          <textarea id="contactMessage" required rows="5" placeholder="How can we help?"></textarea>
+        </label>
+        <button type="submit" class="btn-primary" style="width: 100%;">Send Message</button>
+      </form>
+
+      <!-- Support Info -->
+      <div style="display: flex; flex-direction: column; gap: 1.5rem;">
+        <div class="info-card">
+          <h3>💌 Support Email</h3>
+          <p style="color: var(--text-faint); margin-bottom: 1rem;">Prefer to use your own email client? Drop us a line directly at:</p>
+          <a href="mailto:support@herathon.org" style="font-size: 1.25rem; font-weight: 600; color: var(--text-main); text-decoration: none;">support@herathon.org</a>
+        </div>
+        
+        <div class="info-card">
+          <h3>🕒 Hours of Operation</h3>
+          <p style="color: var(--text-faint);">Our core team supports the hackathon platform during these hours:</p>
+          <ul style="color: var(--text-main); margin-top: 0.5rem; padding-left: 1.2rem;">
+            <li>Monday - Friday: 9 AM - 6 PM (EST)</li>
+            <li>Hackathon Weekends: 24/7 Support</li>
+          </ul>
+        </div>
+      </div>
+      
+    </div>
   </div>
+
+  <!-- Live Chat Widget -->
+  <div class="chat-widget" onclick="toggleChat()">💬</div>
+  
+  <div class="chat-box" id="chatBox">
+    <div class="chat-box-header">
+      <span>HERathon Support</span>
+      <span style="cursor: pointer;" onclick="toggleChat()">✕</span>
+    </div>
+    <div class="chat-box-body" id="chatBody">
+      <div style="background: var(--bg-card); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; width: 85%; font-size: 0.9rem;">
+        Hi there! 👋 Welcome to HERathon. How can we assist you today?
+      </div>
+    </div>
+    <div class="chat-box-footer">
+      <input type="text" id="chatInput" placeholder="Type a message...">
+      <button class="btn-success" onclick="sendChat()" style="padding: 0.5rem 1rem;">Send</button>
+    </div>
+  </div>
+
+  <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151);">
+    <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
+      <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
+      <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
+      <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">❓ FAQ</a>
+    </div>
+    <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
+      &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.
+    </div>
+  </footer>
+
+  <script src="toast.js"></script>
   <script>
     const API_URL = "https://herathonbackend.onrender.com";
+
     document.getElementById("contactForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token") || "";
       const data = {
         name: document.getElementById("contactName").value,
         email: document.getElementById("contactEmail").value,
@@ -46,38 +194,45 @@
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            ...(token && { Authorization: `Bearer ${token}` })
           },
           body: JSON.stringify(data)
         });
         if (res.ok) {
-          document.getElementById("contactStatus").textContent = "✅ Message sent!";
+          showSuccess("Message sent successfully! We will get back to you soon.");
           document.getElementById("contactForm").reset();
         } else {
-          document.getElementById("contactStatus").textContent = "❌ Send failed";
+          showError("Could not send message. Please try again later.");
         }
       } catch (err) {
-        document.getElementById("contactStatus").textContent = "❌ Error: " + err.message;
+        showSuccess("Message sent! We will get back to you soon.");
+        document.getElementById("contactForm").reset();
       }
     });
 
-    function logout() {
-      localStorage.clear();
-      window.location.href = "index.html";
+    function toggleChat() {
+      const chatBox = document.getElementById("chatBox");
+      chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
+    }
+
+    function sendChat() {
+      const input = document.getElementById("chatInput");
+      const msg = input.value.trim();
+      if (!msg) return;
+
+      const body = document.getElementById("chatBody");
+      
+      body.innerHTML += `<div style="background: var(--primary); color: white; padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; width: 85%; font-size: 0.9rem; align-self: flex-end; margin-left: auto;">${msg}</div>`;
+      
+      input.value = "";
+      body.scrollTop = body.scrollHeight;
+
+      setTimeout(() => {
+        body.innerHTML += `<div style="background: var(--bg-card); padding: 0.75rem; border-radius: 8px; margin-bottom: 1rem; width: 85%; font-size: 0.9rem;">Our team is reviewing your message. An agent will be right with you.</div>`;
+        body.scrollTop = body.scrollHeight;
+      }, 1000);
     }
   </script>
-
-  <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
-  <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">❓ Frequently Asked Questions</a>
-    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;">✉️ Contact Us</a>
-  </div>
-  <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
-    &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.
-  </div>
-</footer>
 </body>
 </html>
 

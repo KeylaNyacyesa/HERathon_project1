@@ -24,8 +24,7 @@
   } else if (userRole === "admin") {
     navLinks = [
       { page: "dashboard", label: "Dashboard" },
-      { page: "manage-users", label: "Manage Users" },
-      { page: "manage-challenges", label: "Manage Challenges" },
+      { page: "admin", label: "Admin Panel" },
       { page: "submissions-review", label: "Review Submissions" }
     ];
   } else {

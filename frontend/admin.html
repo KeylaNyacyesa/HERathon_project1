@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+  <style>
+    .admin-grid {
+      display: grid;
+      grid-template-columns: 250px 1fr;
+      gap: 2rem;
+      min-height: 80vh;
+    }
+    .admin-sidebar {
+      background: var(--bg-dark);
+      padding: 1.5rem;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-subtle);
+    }
+    .admin-nav {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    .admin-nav li {
+      margin-bottom: 0.5rem;
+    }
+    .admin-nav button {
+      width: 100%;
+      text-align: left;
+      padding: 0.75rem 1rem;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+    .admin-nav button:hover, .admin-nav button.active {
+      background: rgba(99, 102, 241, 0.1);
+      color: var(--primary-light);
+    }
+    .admin-panel {
+      display: none;
+    }
+    .admin-panel.active {
+      display: block;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      text-align: left;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+    th {
+      background: rgba(0,0,0,0.2);
+      color: var(--text-muted);
+      font-weight: 600;
+      font-size: 0.85rem;
+      text-transform: uppercase;
+    }
+    td {
+      color: var(--text-main);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  
+  <div class="page-wrapper">
+    <div class="page-header" style="margin-bottom: 2rem;">
+      <h2 class="page-title">⚙️ Admin Center</h2>
+      <p>System configuration, user management, and reporting.</p>
+    </div>
+
+    <div class="admin-grid">
+      <div class="admin-sidebar">
+        <ul class="admin-nav">
+          <li><button class="active" onclick="switchTab('dashboard')">📊 Main Dashboard</button></li>
+          <li><button onclick="switchTab('users')">👥 User Management</button></li>
+          <li><button onclick="switchTab('challenges')">🧩 Challenge Creation</button></li>
+          <li><button onclick="switchTab('reports')">📈 Reporting</button></li>
+        </ul>
+      </div>
+
+      <div class="admin-content card">
+        
+        <!-- Main Dashboard -->
+        <div id="panel-dashboard" class="admin-panel active">
+          <h3>System Overview</h3>
+          <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-top: 1.5rem;">
+            <div style="padding: 1.5rem; background: var(--bg-dark); border-radius: var(--radius-sm); text-align: center;">
+              <h4 style="color: var(--text-muted); margin-bottom: 0.5rem;">Total Users</h4>
+              <span style="font-size: 2rem; font-weight: 700; color: var(--primary-light);">1,284</span>
+            </div>
+            <div style="padding: 1.5rem; background: var(--bg-dark); border-radius: var(--radius-sm); text-align: center;">
+              <h4 style="color: var(--text-muted); margin-bottom: 0.5rem;">Active Teams</h4>
+              <span style="font-size: 2rem; font-weight: 700; color: #34d399;">156</span>
+            </div>
+            <div style="padding: 1.5rem; background: var(--bg-dark); border-radius: var(--radius-sm); text-align: center;">
+              <h4 style="color: var(--text-muted); margin-bottom: 0.5rem;">Submissions</h4>
+              <span style="font-size: 2rem; font-weight: 700; color: #fbbf24;">4,932</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- User Management -->
+        <div id="panel-users" class="admin-panel">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h3>User Management</h3>
+            <button class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.9rem;">+ Add User</button>
+          </div>
+          <div style="overflow-x: auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Role</th>
+                  <th>Points</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="usersTableBody">
+                <tr><td colspan="5" style="text-align: center; color: var(--text-muted);">Loading users...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Challenge Creation -->
+        <div id="panel-challenges" class="admin-panel">
+          <h3>Create New Challenge</h3>
+          <form style="display: flex; flex-direction: column; gap: 1rem; margin-top: 1.5rem;" onsubmit="event.preventDefault(); showSuccess('Challenge created successfully!'); this.reset();">
+            <label>Title <input required placeholder="e.g. Build a REST API"></label>
+            <label>Description <textarea rows="3" required placeholder="Challenge details..."></textarea></label>
+            <div style="display: flex; gap: 1rem;">
+              <label style="flex: 1;">Category 
+                <select style="width:100%; padding:0.75rem; border-radius:var(--radius-sm); background:var(--bg-dark); color:white; border:1px solid var(--border-subtle);">
+                  <option>Computer Science</option>
+                  <option>Data Science</option>
+                  <option>Mathematics</option>
+                </select>
+              </label>
+              <label style="flex: 1;">Level Focus
+                <input type="number" min="1" max="10" value="1">
+              </label>
+              <label style="flex: 1;">XP Reward
+                <input type="number" value="50">
+              </label>
+            </div>
+            <label>
+              <input type="checkbox" style="width: auto; margin-right: 0.5rem;"> Auto-grade this challenge
+            </label>
+            <button type="submit" class="btn-success" style="align-self: flex-start;">Publish Challenge</button>
+          </form>
+        </div>
+
+        <!-- Reporting -->
+        <div id="panel-reports" class="admin-panel">
+          <h3>System Reports</h3>
+          <p style="color: var(--text-muted); margin-bottom: 2rem;">Generate and export platform analytics.</p>
+          
+          <div style="display: flex; flex-direction: column; gap: 1rem;">
+            <div style="padding: 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: white; display: block;">Submission Conversion Rate</strong>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Percentage of challenges started vs completed</span>
+              </div>
+              <button class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.9rem;" onclick="showSuccess('Report exported to CSV')">Export CSV</button>
+            </div>
+            
+            <div style="padding: 1rem; border: 1px solid var(--border-subtle); border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <strong style="color: white; display: block;">Mentorship Engagement</strong>
+                <span style="font-size: 0.85rem; color: var(--text-muted);">Active mentor relationships and feedback times</span>
+              </div>
+              <button class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.9rem;" onclick="showSuccess('Report exported to CSV')">Export CSV</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="toast.js"></script>
+  <script>
+    const userStr = localStorage.getItem("user");
+    if (!userStr || JSON.parse(userStr).role !== "admin") {
+      window.location.href = "dashboard.html";
+    }
+
+    function switchTab(tabId) {
+      document.querySelectorAll('.admin-nav button').forEach(b => b.classList.remove('active'));
+      event.target.classList.add('active');
+      
+      document.querySelectorAll('.admin-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tabId).classList.add('active');
+
+      if (tabId === 'users') loadMockUsers();
+    }
+
+    function loadMockUsers() {
+      const tbody = document.getElementById("usersTableBody");
+      const mockUsers = [
+        { name: "Jane Doe", role: "student", points: 450, status: "Active" },
+        { name: "Sarah Smith", role: "mentor", points: "-", status: "Active" },
+        { name: "Admin Setup", role: "admin", points: "-", status: "System" },
+        { name: "Emily Chen", role: "student", points: 120, status: "Active" }
+      ];
+      
+      tbody.innerHTML = mockUsers.map(u => `
+        <tr>
+          <td style="font-weight:500;">${u.name}</td>
+          <td><span style="padding:0.2rem 0.5rem; background:rgba(255,255,255,0.1); border-radius:4px; font-size:0.8rem; text-transform:uppercase;">${u.role}</span></td>
+          <td>${u.points} XP</td>
+          <td style="color:#34d399;">${u.status}</td>
+          <td>
+            <button style="background:transparent; border:none; color:var(--text-muted); cursor:pointer;">Edit</button>
+            <button style="background:transparent; border:none; color:#ef4444; cursor:pointer; margin-left:0.5rem;">Ban</button>
+          </td>
+        </tr>
+      `).join("");
+    }
+  </script>
+</body>
+</html>
