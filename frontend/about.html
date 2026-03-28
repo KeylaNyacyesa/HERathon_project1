@@ -1,9 +1,45 @@
-const fs = require('fs');
-const path = require('path');
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About Us - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .about-section { margin-bottom: 2rem; }
+    .about-section h2 { color: var(--primary, #6366f1); margin-bottom: 1rem; }
+  </style>
+</head>
+<body>
 
-const directoryPath = path.join(__dirname, 'frontend');
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    
+    <h1 style="text-align: center; margin-bottom: 3rem;">🌟 About HERathon</h1>
+    
+    <div class="card about-section">
+      <h2>Our Mission</h2>
+      <p>HERathon's mission is to bridge the gender gap in STEM fields by providing a supportive, interactive, and gamified platform that empowers young women to learn, compete, and excel in technology.</p>
+    </div>
 
-const newFooter = `
+    <div class="card about-section">
+      <h2>Our Vision</h2>
+      <p>We envision a tech industry where women are equally represented as leaders, innovators, and creators. By fostering early passion and providing continuous mentorship, HERathon aims to be the catalyst for the next generation of female tech pioneers.</p>
+    </div>
+
+    <div class="card about-section">
+      <h2>The Team</h2>
+      <p>Our team is composed of passionate developers, designers, and educators dedicated to making STEM accessible for everyone. We operate driven by the genuine belief that technology is for all.</p>
+    </div>
+
+    <div class="card about-section">
+      <h2>Partners</h2>
+      <p>We collaborate with industry-leading companies, non-profit organizations, and educational institutions who share our commitment to diversity and inclusion in the tech space.</p>
+    </div>
+
+  </div>
+
+
 <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
     <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
@@ -15,27 +51,5 @@ const newFooter = `
     &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.
   </div>
 </footer>
-`;
-
-function processDir(dir) {
-    if(!fs.existsSync(dir)) return;
-    const files = fs.readdirSync(dir).filter(f => f.endsWith('.html'));
-    files.forEach(file => {
-        const filePath = path.join(dir, file);
-        let content = fs.readFileSync(filePath, 'utf8');
-        
-        const footerRegex = /<footer[\s\S]*?<\/footer>/i;
-        
-        if (footerRegex.test(content)) {
-            content = content.replace(footerRegex, newFooter.trim());
-        } else {
-            content = content.replace(/<\/body>/i, `\n${newFooter.trim()}\n</body>`);
-        }
-
-        fs.writeFileSync(filePath, content, 'utf8');
-        console.log(`Updated footer in ${filePath}`);
-    });
-}
-
-processDir(directoryPath);
-processDir(path.join(directoryPath, 'fixed'));
+</body>
+</html>
