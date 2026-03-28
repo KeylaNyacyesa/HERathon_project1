@@ -81,4 +81,49 @@ router.patch("/:id", auth, async (req, res) => {
   }
 });
 
+// @route   POST /submissions
+// @desc    Create a new submission
+router.post("/", auth, async (req, res) => {
+  try {
+    const { challengeId, isSimple, answer, projectLink, description } = req.body;
+
+    if (isSimple) {
+      // Auto-complete simple challenges
+      const user = await User.findById(req.user.id);
+      
+      if (!user.completedChallenges.includes(challengeId)) {
+        user.points = (user.points || 0) + 50;
+        user.level = Math.floor(user.points / 100) + 1;
+        user.completedChallenges.push(challengeId);
+        await user.save();
+      }
+
+      const autoSubmission = new Submission({
+        userId: req.user.id,
+        challengeId,
+        projectLink: "",
+        description: answer || "",
+        status: "approved"
+      });
+      await autoSubmission.save();
+
+      return res.json({ message: "Submission auto-graded!", autoGraded: true, submission: autoSubmission });
+    }
+
+    const submission = new Submission({
+      userId: req.user.id,
+      challengeId,
+      projectLink: projectLink || "",
+      description: description,
+      status: "Under Review"
+    });
+    
+    await submission.save();
+    res.json({ message: "Submission successful!", autoGraded: false, submission });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ message: "Server Error" });
+  }
+});
+
 module.exports = router;
