@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Challenges — HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+
+  <div class="page-wrapper">
+
+    <!-- Page header -->
+    <div class="page-header">
+      <div>
+        <h2 class="page-title">⚔️ Challenge Map</h2>
+        <p>Complete challenges to level up and unlock rewards.</p>
+      </div>
+      <button onclick="loadChallenges()" class="btn btn-ghost btn-sm">↻ Refresh</button>
+    </div>
+
+    <!-- Gamification panel -->
+    <div class="gamification-panel">
+      <div class="gamification-stats">
+        <div class="gamification-stat">
+          <span class="label">⭐ Level</span>
+          <span class="value primary" id="level">1</span>
+        </div>
+        <div class="gamification-stat">
+          <span class="label">💠 Points</span>
+          <span class="value success" id="points">0</span>
+        </div>
+      </div>
+      <div class="progress-bar" style="margin-top:0.75rem;">
+        <div class="progress-fill" id="progressFill" style="width:0%"></div>
+      </div>
+    </div>
+
+    <!-- Challenge map -->
+    <div id="challengeList" class="challenge-map">
+      <svg id="mapSvg" width="100%" height="800" class="map-svg"></svg>
+    </div>
+
+  </div>
+
+  <script src="toast.js"></script>
+  <script>
+    const API_URL = "http://localhost:5000";
+    let challengesData = [];
+    let userSubmissions = [];
+
+    function updateProgress(user) {
+      const nextLevelPoints = user.level * 100;
+      const progress = Math.min((user.points / nextLevelPoints) * 100, 100);
+      const fillEl = document.getElementById("progressFill");
+      if (fillEl) fillEl.style.width = `${progress}%`;
+    }
+
+    loadPageGamification();
+    loadChallenges();
+    loadUserSubmissions();
+
+    async function loadPageGamification() {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const profile = await res.json();
+      document.getElementById("level").textContent = profile.user.level || 1;
+      document.getElementById("points").textContent = profile.user.points || 0;
+      updateProgress(profile.user);
+    }
+
+    async function loadUserSubmissions() {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/submissions/my`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      userSubmissions = await res.json();
+    }
+
+    async function loadChallenges() {
+      const userId = localStorage.getItem("userId");
+      const token = localStorage.getItem("token");
+      const urlParams = new URLSearchParams(window.location.search);
+      const topicOption = urlParams.get('topic') ? `&topic=${encodeURIComponent(urlParams.get('topic'))}` : '';
+
+      const res = await fetch(`${API_URL}/challenges?userId=${userId}${topicOption}`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      challengesData = await res.json();
+      await loadUserSubmissions();
+      renderChallengeMap();
+    }
+
+    function renderChallengeMap() {
+      const svg = document.getElementById("mapSvg");
+      const userLevel = parseInt(document.getElementById("level").textContent) || 1;
+      const urlParams = new URLSearchParams(window.location.search);
+      const chosenTopic = urlParams.get('topic');
+
+      while (svg.firstChild) svg.removeChild(svg.firstChild);
+
+      const titleText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+      titleText.setAttribute("x", "50%");
+      titleText.setAttribute("y", "40");
+      titleText.setAttribute("text-anchor", "middle");
+      titleText.setAttribute("fill", "#f1f5f9");
+      titleText.setAttribute("font-size", "22");
+      titleText.setAttribute("font-weight", "bold");
+      titleText.setAttribute("font-family", "Space Grotesk, sans-serif");
+      titleText.textContent = chosenTopic ? `Topic: ${chosenTopic}` : "All Challenges";
+      svg.appendChild(titleText);
+
+      if (!Array.isArray(challengesData) || challengesData.length === 0) {
+        const noDataText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        noDataText.setAttribute("x", "50%");
+        noDataText.setAttribute("y", "100");
+        noDataText.setAttribute("text-anchor", "middle");
+        noDataText.setAttribute("fill", "#64748b");
+        noDataText.setAttribute("font-size", "16");
+        noDataText.textContent = "No challenges yet — check back soon!";
+        svg.appendChild(noDataText);
+        return;
+      }
+
+      const nodeRadius = 58;
+      const spacing = 140;
+
+      challengesData.slice(0, 8).forEach((challenge, index) => {
+        const y = 120 + index * spacing;
+        const isUnlocked = challenge.level <= userLevel;
+        const isCompleted = challenge.status === "completed";
+        const submission = userSubmissions.find(s => s.challengeId && s.challengeId._id === challenge._id);
+        const medal = submission?.medal || "none";
+
+        const group = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        if (isUnlocked) {
+          group.setAttribute("cursor", "pointer");
+          group.onclick = () => openChallengeModal(challenge);
+        } else {
+          group.setAttribute("cursor", "not-allowed");
+        }
+
+        const circle = document.createElementNS("http://www.w3.org/2000/svg", "circle");
+        circle.setAttribute("cx", "50%");
+        circle.setAttribute("cy", y);
+        circle.setAttribute("r", nodeRadius);
+        circle.setAttribute("fill", isCompleted ? "#10b981" : isUnlocked ? "#6366f1" : "#334155");
+        circle.setAttribute("stroke", isCompleted ? "#34d399" : isUnlocked ? "#818cf8" : "#475569");
+        circle.setAttribute("stroke-width", "3");
+        circle.setAttribute("opacity", isUnlocked ? "1" : "0.5");
+        group.appendChild(circle);
+
+        const text = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        text.setAttribute("x", "50%");
+        text.setAttribute("y", y);
+        text.setAttribute("text-anchor", "middle");
+        text.setAttribute("dominant-baseline", "middle");
+        text.setAttribute("fill", "#fff");
+        text.setAttribute("font-size", "13");
+        text.setAttribute("font-weight", "bold");
+        text.setAttribute("font-family", "Space Grotesk, sans-serif");
+        text.setAttribute("pointer-events", "none");
+        text.textContent = challenge.title.length > 18 ? challenge.title.slice(0, 16) + '…' : challenge.title;
+        group.appendChild(text);
+
+        const levelText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        levelText.setAttribute("x", "50%");
+        levelText.setAttribute("y", y + 20);
+        levelText.setAttribute("text-anchor", "middle");
+        levelText.setAttribute("fill", "rgba(255,255,255,0.7)");
+        levelText.setAttribute("font-size", "12");
+        levelText.setAttribute("font-family", "DM Sans, sans-serif");
+        levelText.setAttribute("pointer-events", "none");
+        levelText.textContent = `Level ${challenge.level}`;
+        group.appendChild(levelText);
+
+        if (isCompleted) {
+          const statusIcon = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          statusIcon.setAttribute("x", "50%");
+          statusIcon.setAttribute("y", y + 42);
+          statusIcon.setAttribute("text-anchor", "middle");
+          statusIcon.setAttribute("fill", "#fff");
+          statusIcon.setAttribute("font-size", "20");
+          statusIcon.setAttribute("pointer-events", "none");
+          statusIcon.textContent = "✅";
+          group.appendChild(statusIcon);
+        }
+
+        if (isCompleted && medal !== "none") {
+          const medalText = document.createElementNS("http://www.w3.org/2000/svg", "text");
+          medalText.setAttribute("x", "50%");
+          medalText.setAttribute("y", y + 42);
+          medalText.setAttribute("text-anchor", "middle");
+          medalText.setAttribute("fill", medal === "gold" ? "#facc15" : medal === "silver" ? "#c0c0c0" : "#cd7f32");
+          medalText.setAttribute("font-size", "18");
+          medalText.setAttribute("font-weight", "bold");
+          medalText.setAttribute("pointer-events", "none");
+          medalText.textContent = medal === "gold" ? "🥇" : medal === "silver" ? "🥈" : "🥉";
+          group.appendChild(medalText);
+        }
+
+        svg.appendChild(group);
+
+        if (index < challengesData.length - 1) {
+          const line = document.createElementNS("http://www.w3.org/2000/svg", "line");
+          line.setAttribute("x1", "50%");
+          line.setAttribute("y1", y + nodeRadius);
+          line.setAttribute("x2", "50%");
+          line.setAttribute("y2", y + spacing - nodeRadius);
+          line.setAttribute("stroke", isUnlocked ? "#6366f1" : "#334155");
+          line.setAttribute("stroke-width", "4");
+          line.setAttribute("stroke-dasharray", isUnlocked ? "none" : "6,4");
+          line.setAttribute("opacity", isUnlocked ? "1" : "0.4");
+          svg.appendChild(line);
+        }
+      });
+    }
+
+    function openChallengeModal(challenge) {
+      const existing = document.querySelector(".challenge-modal");
+      if (existing) existing.remove();
+
+      const modal = document.createElement("div");
+      modal.className = "challenge-modal";
+      modal.innerHTML = `
+        <div class="modal-content">
+          <h3>${challenge.title}</h3>
+          <span class="badge badge-primary">Level ${challenge.level}</span>
+          <p style="color:var(--text-muted); margin-top:0.5rem;">${challenge.description || 'Complete this challenge to earn 50 XP!'}</p>
+          ${challenge.deadline ? `<p style="font-size:0.85rem; color:var(--text-faint);">⏰ Deadline: ${new Date(challenge.deadline).toLocaleDateString()}</p>` : ''}
+          <label>GitHub / Project URL<input id="modalProjectLink" placeholder="https://github.com/…"></label>
+          <label>Describe your solution<textarea id="modalDescription" placeholder="What did you build and what did you learn?"></textarea></label>
+          <div class="modal-buttons">
+            <button onclick="submitChallenge('${challenge._id}')" class="btn-success">🚀 Submit Solution</button>
+            <button onclick="document.querySelector('.challenge-modal').remove()" class="btn-ghost">Cancel</button>
+          </div>
+        </div>
+      `;
+      document.body.appendChild(modal);
+    }
+
+    async function submitChallenge(challengeId) {
+      const token = localStorage.getItem("token");
+      const projectLink = document.getElementById("modalProjectLink").value;
+      const description = document.getElementById("modalDescription").value;
+
+      if (!projectLink || !description) {
+        showError("Please fill in both the project link and description");
+        return;
+      }
+
+      const res = await fetch(`${API_URL}/submissions`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ challengeId, projectLink, description })
+      });
+
+      if (res.ok) {
+        showSuccess("Submission sent! Awaiting mentor review ✨");
+        document.querySelector(".challenge-modal").remove();
+        loadChallenges();
+        loadPageGamification();
+      } else {
+        showError("Submission failed — please try again");
+      }
+    }
+  </script>
+</body>
+</html>

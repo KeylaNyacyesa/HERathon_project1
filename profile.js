@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+﻿const fs = require('fs');
+
+const content = \<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -28,9 +30,9 @@
       </div>
 
       <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-        <button onclick="toggleEditMode()" class="btn-secondary" style="width:auto; border-radius: var(--radius-pill);">✏️ Edit Profile</button>
-        <button id="manageCoursesBtn" onclick="window.location.href='select-courses.html'" class="btn-primary" style="width:auto; display:none; border-radius: var(--radius-pill);">📚 Manage Courses</button>
-        <button onclick="logout()" class="btn-danger" style="width:auto; border-radius: var(--radius-pill);">🚪 Sign Out</button>
+        <button onclick="toggleEditMode()" class="btn-secondary" style="width:auto;">✏️ Edit Profile</button>
+        <button id="manageCoursesBtn" onclick="window.location.href='select-courses.html'" class="btn-primary" style="width:auto; display:none;">📚 Manage Courses</button>
+        <button onclick="logout()" class="btn-danger" style="width:auto;">🚪 Sign Out</button>
       </div>
     </div>
 
@@ -40,11 +42,11 @@
        <div style="display:flex; flex-direction:column; gap:1rem;">
           <div>
             <label style="color:var(--text-muted); font-size:0.9rem; margin-bottom:0.25rem; display:block;">Full Name</label>
-            <input type="text" id="editName" class="form-input" style="width:100%; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-main); padding: 0.75rem; border-radius: var(--radius-md);" />
+            <input type="text" id="editName" class="form-input" style="width:100%;" />
           </div>
-          <div style="display:flex; gap:1rem; margin-top: 0.5rem;">
-            <button onclick="saveProfile()" class="btn-primary" style="width:auto; border-radius: var(--radius-pill);">Save Changes</button>
-            <button onclick="toggleEditMode()" class="btn-secondary" style="width:auto; border-radius: var(--radius-pill);">Cancel</button>
+          <div>
+            <button onclick="saveProfile()" class="btn-primary" style="width:auto;">Save Changes</button>
+            <button onclick="toggleEditMode()" class="btn-secondary" style="width:auto; margin-left: 0.5rem;">Cancel</button>
           </div>
        </div>
     </div>
@@ -59,28 +61,28 @@
       const user = JSON.parse(userStr);
 
       if (user.role === 'student') {
-         document.getElementById('manageCoursesBtn').style.display = 'inline-flex';
+         document.getElementById('manageCoursesBtn').style.display = 'inline-block';
       }
 
-      document.getElementById("userInfo").innerHTML = `
+      document.getElementById("userInfo").innerHTML = \\\
         <div style="display:grid; grid-template-columns: 80px 1fr; gap: 1.5rem; align-items:center; margin-bottom:1.5rem;">
           <div class="avatar-circle" style="width:72px; height:72px; font-size:2rem; background:linear-gradient(135deg,#6366f1,#ec4899); margin:0;">
-            ${(user.name || "U").charAt(0).toUpperCase()}
+            \\\
           </div>
           <div>
-            <h3 style="font-size:1.4rem; color:var(--text-main); margin-bottom:0.25rem;">${user.name}</h3>
-            <p style="margin:0; color:var(--text-muted); font-size:0.95rem;">${user.email}</p>
-            <span class="badge badge-primary" style="margin-top:0.5rem; display:inline-flex;">${(user.role || "student").charAt(0).toUpperCase() + (user.role || "student").slice(1)}</span>
+            <h3 style="font-size:1.4rem; color:var(--text-main); margin-bottom:0.25rem;">\\\</h3>
+            <p style="margin:0; color:var(--text-muted); font-size:0.95rem;">\\\</p>
+            <span class="badge badge-primary" style="margin-top:0.5rem; display:inline-flex;">\\\</span>
           </div>
         </div>
         <hr style="border:none; border-top:1px dashed var(--border-subtle); margin:0 0 1.25rem;">
         <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;">
-          <div class="gamification-stat" style="background: var(--bg-card); padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
-            <strong style="display:block; color:var(--primary-light); font-size: 1.2rem;">🏅 ${user.badges?.length || 0}</strong>
-            <span style="font-size:0.85rem; color:var(--text-muted);">${user.badges?.length ? user.badges.join(", ") : "Badges Earned"}</span>
+          <div class="gamification-stat">
+            <span class="label">🏅 Badges</span>
+            <span class="value" style="font-size:1rem; color:var(--text-muted);">\\\</span>
           </div>
         </div>
-      `;
+      \\\;
     }
 
     function toggleEditMode() {
@@ -105,15 +107,14 @@
        if (userStr) {
           const user = JSON.parse(userStr);
           user.name = newName;
-          
-          // Mock backend update for Prototype:
+          // Note: In a real app we'd call the backend to update here
+          // Mock backend update:
           localStorage.setItem("user", JSON.stringify(user));
           localStorage.setItem("name", newName);
           showSuccess("Profile updated successfully! (Mock)");
           toggleEditMode();
           loadProfile();
-          
-          // Update nav if it exists by reloading to propagate storage changes
+          // Update nav if it exists
           setTimeout(() => location.reload(), 1000); 
        }
     }
@@ -127,4 +128,6 @@
     window.onload = loadProfile;
   </script>
 </body>
-</html>
+</html>\;
+
+fs.writeFileSync('frontend/profile.html', content, 'utf8');

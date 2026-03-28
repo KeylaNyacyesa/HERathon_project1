@@ -1,4 +1,6 @@
-<!DOCTYPE html>
+﻿const fs = require('fs');
+
+const content = \<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
@@ -25,7 +27,7 @@
       <!-- Mentors List -->
       <div class="card" style="grid-column: span 2;">
         <div class="card-title">🌟 Available Mentors</div>
-        <div id="mentorsList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
+        <div id="mentorsList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem;">
           <p style="color:var(--text-faint);">Loading mentors...</p>
         </div>
       </div>
@@ -52,8 +54,8 @@
     async function loadMentors() {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/mentors/available`, {
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await fetch(\\\\\\/mentors/available\\\, {
+          headers: { Authorization: \\\Bearer \\\\\\ }
         });
         const list = document.getElementById("mentorsList");
         
@@ -63,7 +65,7 @@
         list.innerHTML = "";
         
         if (mentors.length === 0) {
-            list.innerHTML = "<p style='color:var(--text-muted);'>No mentors available right now.</p>";
+            list.innerHTML = "<p style=\\"color:var(--text-muted);\\">No mentors available right now.</p>";
             return;
         }
 
@@ -73,32 +75,24 @@
           card.style.padding = "1.5rem";
           card.style.borderRadius = "var(--radius-md)";
           card.style.border = "1px solid var(--border-subtle)";
-          card.style.display = "flex";
-          card.style.flexDirection = "column";
-          card.style.gap = "0.5rem";
-
-          card.innerHTML = `
-            <div style="display:flex; align-items:center; gap: 0.75rem; margin-bottom: 0.5rem;">
-              <div class="avatar-circle" style="width:40px; height:40px; font-size:1.2rem; margin:0;">
-                ${mentor.name.charAt(0).toUpperCase()}
-              </div>
-              <h4 style="margin:0; font-size:1.1rem; color:var(--primary-light);">${mentor.name}</h4>
-            </div>
-            <p style="margin:0 0 1rem; font-size:0.9rem; color:var(--text-muted); flex: 1;">${mentor.skills || "General STEM Guidance"}</p>
-            <button class="btn-primary" style="width:100%; border-radius: var(--radius-pill); font-size: 0.9rem;" onclick="requestMentorship('${mentor._id}')">Request Mentor</button>
-          `;
+          
+          card.innerHTML = \\\
+            <h4 style="margin:0 0 0.5rem; font-size:1.1rem; color:var(--primary-light);">\\\</h4>
+            <p style="margin:0 0 1rem; font-size:0.9rem; color:var(--text-muted);">\\\</p>
+            <button class="btn-primary" style="width:100%;" onclick="requestMentorship('\\\')">Request Mentor</button>
+          \\\;
           list.appendChild(card);
         });
       } catch (err) {
-        document.getElementById("mentorsList").innerHTML = "<p style='color:#fca5a5;'>Failed to load mentors.</p>";
+        document.getElementById("mentorsList").innerHTML = "<p style=\\"color:#fca5a5;\\">Failed to load mentors.</p>";
       }
     }
 
     async function loadMyMentorships() {
       try {
         const token = localStorage.getItem("token");
-        const res = await fetch(`${API_URL}/mentors/my-mentorships`, {
-          headers: { Authorization: `Bearer ${token}` }
+        const res = await fetch(\\\\\\/mentors/my-mentorships\\\, {
+          headers: { Authorization: \\\Bearer \\\\\\ }
         });
         const list = document.getElementById("myMentorships");
         
@@ -107,51 +101,41 @@
         
         list.innerHTML = "";
         if (mentorships.length === 0) {
-            list.innerHTML = "<p style='color:var(--text-muted);'>You have not requested any mentors yet.</p>";
+            list.innerHTML = "<p style=\\"color:var(--text-muted);\\">You have not requested any mentors yet.</p>";
             return;
         }
 
         mentorships.forEach(m => {
           const mName = m.mentorId ? m.mentorId.name : "Unknown Mentor";
           const item = document.createElement("div");
-          item.style.padding = "1rem 1.5rem";
+          item.style.padding = "1rem";
           item.style.background = "var(--bg-dark)";
           item.style.borderRadius = "var(--radius-sm)";
-          item.style.border = "1px solid var(--border-subtle)";
           item.style.display = "flex";
           item.style.justifyContent = "space-between";
           item.style.alignItems = "center";
           
-          item.innerHTML = `
-             <div style="display:flex; align-items:center; gap: 1rem;">
-               <div class="avatar-circle" style="width:36px; height:36px; font-size:1rem; margin:0; background:rgba(99, 102, 241, 0.2); color:var(--primary-light);">
-                 ${mName.charAt(0).toUpperCase()}
-               </div>
-               <div>
-                 <strong style="display:block; margin-bottom:0.15rem; color:var(--text-main);">${mName}</strong>
-                 <span style="font-size:0.85rem; color:var(--text-muted);">Status: 
-                    <span style="color:${m.status === 'accepted' ? '#86efac' : m.status === 'rejected' ? '#fca5a5' : '#fde047'}; font-weight:600;">
-                       ${m.status.toUpperCase()}
-                    </span>
-                 </span>
-               </div>
+          item.innerHTML = \\\
+             <div>
+               <strong style="display:block; margin-bottom:0.25rem;">\\\</strong>
+               <span style="font-size:0.85rem; color:var(--text-muted);">Status: <span style="color:var(--primary-light);">\\\</span></span>
              </div>
-          `;
+          \\\;
           list.appendChild(item);
         });
       } catch (err) {
-        document.getElementById("myMentorships").innerHTML = "<p style='color:#fca5a5;'>Failed to load mentorship requests.</p>";
+        document.getElementById("myMentorships").innerHTML = "<p style=\\"color:#fca5a5;\\">Failed to load mentorship requests.</p>";
       }
     }
 
     async function requestMentorship(mentorId) {
       const token = localStorage.getItem("token");
       try {
-        const res = await fetch(`${API_URL}/mentors/request`, {
+        const res = await fetch(\\\\\\/mentors/request\\\, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`
+            Authorization: \\\Bearer \\\\\\
           },
           body: JSON.stringify({ mentorId })
         });
@@ -168,5 +152,6 @@
     }
   </script>
 </body>
-</html>
+</html>\;
 
+fs.writeFileSync('frontend/mentorship.html', content, 'utf8');

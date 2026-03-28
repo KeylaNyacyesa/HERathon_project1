@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Courses - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    <nav>
+      <a href="index.html">← Back to Login</a>
+    </nav>
+    <h1>🎓 Select Your Specialization Field</h1>
+    <div class="nav-grid">
+      <label class="nav-card" onclick="toggleCourse('Mathematics')">
+        <input type="checkbox" id="Mathematics" style="display: none;">
+        <h3>Mathematics</h3>
+      </label>
+      <label class="nav-card" onclick="toggleCourse('Biology')">
+        <input type="checkbox" id="Biology" style="display: none;">
+        <h3>Biology</h3>
+      </label>
+      <label class="nav-card" onclick="toggleCourse('Chemistry')">
+        <input type="checkbox" id="Chemistry" style="display: none;">
+        <h3>Chemistry</h3>
+      </label>
+      <label class="nav-card" onclick="toggleCourse('Physics')">
+        <input type="checkbox" id="Physics" style="display: none;">
+        <h3>Physics</h3>
+      </label>
+      <label class="nav-card" onclick="toggleCourse('Computer Science')">
+        <input type="checkbox" id="Computer Science" style="display: none;">
+        <h3>Computer Science</h3>
+      </label>
+    </div>
+    <button onclick="saveCourses()" id="saveCoursesBtn" disabled>Select Topics →</button>
+    <p id="status"></p>
+  </div>
+  <script>
+    const API_URL = "http://localhost:5000";
+    const selectedCourses = new Set();
+    
+    function toggleCourse(course) {
+      const checkbox = document.getElementById(course);
+      checkbox.checked = !checkbox.checked;
+      if (checkbox.checked) {
+        selectedCourses.add(course);
+      } else {
+        selectedCourses.delete(course);
+      }
+      updateButton();
+      checkbox.parentElement.classList.toggle('selected', checkbox.checked);
+    }
+    
+    function updateButton() {
+      document.getElementById('saveCoursesBtn').disabled = selectedCourses.size === 0;
+    }
+    
+    async function saveCourses() {
+      const token = localStorage.getItem('token');
+      const courses = Array.from(selectedCourses);
+      const res = await fetch(`${API_URL}/users/courses`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ courses })
+      });
+      if (res.ok) {
+        window.location.href = 'select-topics.html';
+      } else {
+        document.getElementById('status').textContent = 'Error saving courses';
+      }
+    }
+  </script>
+  <style>
+    .nav-card input:checked + h3 { color: #10b981; }
+    .nav-card.selected { border-color: #10b981; background: rgba(16,185,129,0.1); }
+  </style>
+</body>
+</html>
