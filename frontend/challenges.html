@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>\n  <script>\n    const checkUserStr = localStorage.getItem("user");\n    if (!checkUserStr) { window.location.href="index.html"; }\n    else {\n      const roleCheck = JSON.parse(checkUserStr).role;\n      if (roleCheck === "mentor" || roleCheck === "admin") {\n        window.location.href = "dashboard.html";\n      }\n    }\n  </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Challenges — HERathon</title>
