@@ -15,6 +15,7 @@ async function loadDashboard() {
   const userNameEl = document.getElementById("userName");
   if (userNameEl) userNameEl.textContent = user.name;
 
+  const pageHeader = document.querySelector(".page-header");
   const gamificationPanel = document.querySelector(".gamification-panel");
   const topicTree = document.querySelector(".topic-tree");
   let mentorDashboard = document.getElementById("mentorDashboard");
@@ -36,10 +37,11 @@ async function loadDashboard() {
     if(typeof loadMyChallenges === 'function') loadMyChallenges(token);
 
   } else if (role === "mentor") {
+    if (pageHeader) pageHeader.style.display = "none";
     if (gamificationPanel) gamificationPanel.style.display = "none";
     if (topicTree) topicTree.style.display = "none";
 
-    const dashboardContainer = document.querySelector("main") || document.body;
+    const dashboardContainer = document.getElementById("dashboardContent") || document.querySelector(".dashboard-container") || document.body;
     let mentorStatsHtml = `
       <div id="mentorDashboard" style="padding: 2rem;">
         <h2>Welcome back, ${user.name} &mdash; Mentor Dashboard</h2>
@@ -81,7 +83,7 @@ async function loadDashboard() {
     }
 
   } else if (role === "admin") {
-     const dashboardContainer = document.querySelector("main") || document.body;
+     const dashboardContainer = document.getElementById("dashboardContent") || document.querySelector(".dashboard-container") || document.body;
      dashboardContainer.innerHTML = `
         <div style="padding: 2rem;">
           <h2>Admin Panel</h2>
