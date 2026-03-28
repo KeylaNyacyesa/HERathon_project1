@@ -89,4 +89,5 @@
     localStorage.clear();
     window.location.href = getLink("index");
   };
-})();
+
+  })();
