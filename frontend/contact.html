@@ -217,6 +217,11 @@
         } catch (err) {
           showError("An error occurred while sending the message.");
           e.target.reset();
+        }
+      });
+
+    function toggleChat() {
+      const chatBox = document.getElementById("chatBox");
       chatBox.style.display = chatBox.style.display === "flex" ? "none" : "flex";
     }
 
