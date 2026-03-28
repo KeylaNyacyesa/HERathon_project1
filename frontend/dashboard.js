@@ -1,4 +1,4 @@
-const API_URL = "https://herathon-project-backend.vercel.app";
+const API_URL = "https://herathonbackend.onrender.com";
 
 async function loadDashboard() {
   const token = localStorage.getItem("token");
