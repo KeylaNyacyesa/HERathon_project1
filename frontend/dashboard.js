@@ -311,23 +311,89 @@ async function renderMentorDashboard() {
   const gamification = document.getElementById("gamification");
   if (gamification) gamification.style.display = "none";
 
-  dashboard.innerHTML = `
+  dashboard.innerHTML = 
     <div class="mentor-panel">
-      <h2>👨‍🏫 Mentor Dashboard</h2>
+      <h2>????? Mentor Dashboard</h2>
       <div class="mentor-quick-links">
-        <a href="submissions-review.html" class="btn-link">📋 Review Student Submissions</a>
+        <a href="submissions-review.html" class="btn-link">?? Review Student Submissions</a>
       </div>
-      
-      <div class="mentor-stats">
-        <h3>My Students</h3>
-        <button onclick="loadMyStudents()">Load Students</button>
+
+      <div class="mentor-stats" style="margin-top:2rem;">
+        <h3>?? Pending Mentorship Requests</h3>
+        <div id="mentorRequests" style="margin-top:1rem;"><p style="color:var(--text-faint);">Loading requests...</p></div>
+      </div>
+
+      <div class="mentor-stats" style="margin-top:2rem;">
+        <h3>????? My Students</h3>
+        <button class="btn-primary" style="margin-bottom:1rem;" onclick="loadMyStudents()">Load Students</button>
         <ul id="studentList"></ul>
       </div>
     </div>
-  `;
-  
+  ;
+
+  await loadMentorRequests();
   await loadMyStudents();
 }
+
+async function loadMentorRequests() {
+  const token = localStorage.getItem('token');
+  const reqContainer = document.getElementById('mentorRequests');
+  if (!reqContainer) return;
+
+  try {
+    const res = await fetch(\\/mentors/my-mentorships\, {
+      headers: { Authorization: \Bearer \\ }
+    });
+    const mentorships = await res.json();
+    
+    let myId = null;
+    try {
+      const authRes = await fetch(\\/auth/me\, { headers: { Authorization: \Bearer \\ } });
+      const profile = await authRes.json();
+      myId = profile.user._id;
+    } catch(err) { console.error(err); }
+
+    const pendingReqs = mentorships.filter(m => m.status === 'pending' && m.mentorId && String(m.mentorId._id || m.mentorId) === String(myId));
+
+    if (pendingReqs.length === 0) {
+      reqContainer.innerHTML = '<p style="color:var(--text-faint);">No pending requests.</p>';
+      return;
+    }
+
+    let html = '';
+    for(const req of pendingReqs) {
+       html += '<div class="card" style="padding:1.5rem; margin-bottom:1rem; display:flex; justify-content:space-between; align-items:center;"><div><h4 style="margin:0 0 0.25rem 0; font-size:1.1rem; color:var(--text-main);">' + (req.menteeId ? req.menteeId.name : 'Unknown Student') + '</h4><p style="font-size:0.9rem; margin:0; color:var(--text-muted);">Requested mentorship</p></div><div style="display:flex; gap:0.5rem;"><button class="btn-success" onclick="updateMentorshipStatus(\\'' + req._id + '\\', \\'active\\')">Accept</button><button class="btn-danger" style="background:transparent; border:1px solid #ef4444; color:#ef4444; padding:0.4rem 1rem; border-radius:var(--radius-sm); font-weight:600; cursor:pointer;" onclick="updateMentorshipStatus(\\'' + req._id + '\\', \\'declined\\')">Decline</button></div></div>';
+    }
+    reqContainer.innerHTML = html;
+  } catch(e) {
+    reqContainer.innerHTML = '<p style="color:var(--danger);">Error loading requests.</p>';
+  }
+}
+
+window.updateMentorshipStatus = async function(reqId, status) {
+  const token = localStorage.getItem('token');
+  try {
+    const res = await fetch(\\/mentors/request/\/status\, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: \Bearer \\
+      },
+      body: JSON.stringify({ status: status })
+    });
+    
+    if (res.ok) {
+      if(typeof showSuccess !== 'undefined') showSuccess('Request ' + status + '!');
+      loadMentorRequests();
+      loadMyStudents();
+    } else {
+      const data = await res.json();
+      if(typeof showError !== 'undefined') showError(data.message || 'Error updating status');
+    }
+  } catch(e) {
+    if(typeof showError !== 'undefined') showError('Network error');
+  }
+};
 
 async function loadMyStudents() {
   const token = localStorage.getItem("token");
@@ -518,3 +584,4 @@ async function completeChallenge(id) {
     showError("Complete error: " + err.message);
   }
 }
+
