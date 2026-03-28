@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mentorship - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    <nav>
+      <a href="dashboard.html">← Dashboard</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+    <h1>🧑‍🏫 Mentorship</h1>
+    <div class="mentorship-grid">
+      <div>
+        <h3>Available Mentors</h3>
+        <div id="mentorsList"></div>
+      </div>
+      <div>
+        <h3>My Mentorships</h3>
+        <div id="myMentorships"></div>
+      </div>
+    </div>
+  </div>
+  <script src="toast.js"></script>
+  <script>
+    const API_URL = "http://localhost:5000";
+    loadMentors();
+    loadMyMentorships();
+    
+    async function loadMentors() {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/mentors/available`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const mentors = await res.json();
+      
+      const list = document.getElementById("mentorsList");
+      list.innerHTML = "";
+      mentors.forEach(mentor => {
+        const card = document.createElement("div");
+        card.className = "mentor-card";
+        card.innerHTML = `
+          <h4>${mentor.name}</h4>
+          <p>${mentor.skills}</p>
+          <button onclick="requestMentorship('${mentor._id}')">Request Mentor</button>
+        `;
+        list.appendChild(card);
+      });
+    }
+    
+    async function loadMyMentorships() {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/mentors/my-mentorships`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const mentorships = await res.json();
+      
+      const list = document.getElementById("myMentorships");
+      list.innerHTML = "";
+      mentorships.forEach(m => {
+        const item = document.createElement("div");
+        item.innerHTML = `<strong>${m.mentorId.name}</strong> - ${m.status}`;
+        list.appendChild(item);
+      });
+    }
+    
+    async function requestMentorship(mentorId) {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/mentors/request`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ mentorId })
+      });
+      
+      if (res.ok) {
+        showSuccess("Request sent!");
+        loadMyMentorships();
+      }
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
+

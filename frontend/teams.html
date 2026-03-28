@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Teams - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    <nav>
+      <a href="dashboard.html">← Dashboard</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+    
+    <h1>👥 Teams & Collaboration</h1>
+    
+    <div class="dashboard-grid">
+      <!-- Teams List -->
+      <div class="panel" style="grid-column: span 2;">
+        <h2>Available Teams</h2>
+        <div id="teamsList" class="cards" style="margin-top: 1rem;"></div>
+      </div>
+      
+      <!-- Create Team Form -->
+      <div class="card">
+        <h2>Create New Team</h2>
+        <label>
+          Team Name
+          <input id="teamName" placeholder="e.g., Code Queens">
+        </label>
+        <label>
+          Project Idea
+          <textarea id="projectIdea" placeholder="What will you build?" rows="3"></textarea>
+        </label>
+        <label>
+          Max Members
+          <input id="maxMembers" type="number" placeholder="Max Members" value="4" min="2" max="10">
+        </label>
+        <button class="btn-success" onclick="createTeam()">✨ Create Team</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="toast.js"></script>
+  <script>
+    const API_URL = "http://localhost:5000";
+    loadTeams();
+    
+    async function loadTeams() {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API_URL}/teams`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const teams = await res.json();
+        
+        const list = document.getElementById("teamsList");
+        list.innerHTML = "";
+
+        if (teams.length === 0) {
+          list.innerHTML = "<p>No teams available yet. Be the first to create one!</p>";
+          return;
+        }
+
+        teams.forEach(team => {
+          const isFull = team.members.length >= team.maxMembers;
+          const card = document.createElement("div");
+          card.className = "card";
+          card.style.padding = "1.5rem";
+          card.innerHTML = `
+            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">${team.name}</h3>
+            <p style="margin-bottom: 1rem; font-style: italic;">"${team.projectIdea}"</p>
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+              <span style="font-weight: 600; color: var(--text-main);">👩‍💻 ${team.members.length} / ${team.maxMembers} Members</span>
+              <span style="color: ${isFull ? 'var(--danger)' : 'var(--success)'}">${isFull ? 'Full' : 'Open'}</span>
+            </div>
+            ${isFull ? 
+              `<button disabled>Team is Full</button>` : 
+              `<button onclick="joinTeam('${team._id}')">Join Team</button>`
+            }
+          `;
+          list.appendChild(card);
+        });
+      } catch (err) {
+        showError("Failed to load teams.");
+      }
+    }
+    
+    async function createTeam() {
+      const token = localStorage.getItem("token");
+      const name = document.getElementById("teamName").value;
+      const projectIdea = document.getElementById("projectIdea").value;
+      const maxMembers = document.getElementById("maxMembers").value;
+
+      if (!name || !projectIdea) {
+        return showError("Please fill in all fields");
+      }
+
+      try {
+        const res = await fetch(`${API_URL}/teams`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ name, projectIdea, maxMembers })
+        });
+        
+        if (res.ok) {
+          showSuccess("Team created successfully!");
+          document.getElementById("teamName").value = '';
+          document.getElementById("projectIdea").value = '';
+          loadTeams();
+        } else {
+          const data = await res.json();
+          showError(data.message || "Error creating team");
+        }
+      } catch (err) {
+        showError("Failed to create team");
+      }
+    }
+
+    async function joinTeam(teamId) {
+      const token = localStorage.getItem("token");
+      try {
+        const res = await fetch(`${API_URL}/teams/${teamId}/join`, {
+          method: "POST",
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (res.ok) {
+          showSuccess("Successfully joined the team!");
+          loadTeams();
+        } else {
+          const data = await res.json();
+          showError(data.message || "Cannot join this team");
+        }
+      } catch (err) {
+        showError("Error joining team");
+      }
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
+      const name = document.getElementById("teamName").value;
+      const projectIdea = document.getElementById("projectIdea").value;
+      const maxMembers = document.getElementById("maxMembers").value;
+      
+      if (!name || !projectIdea) {
+        alert("Name and idea required");
+        return;
+      }
+      
+      const res = await fetch(`${API_URL}/teams`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ name, projectIdea, maxMembers })
+      });
+      
+      if (res.ok) {
+        alert("Team created!");
+        loadTeams();
+        document.getElementById("teamName").value = '';
+        document.getElementById("projectIdea").value = '';
+      }
+    }
+    
+    async function joinTeam(teamId) {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API_URL}/teams/${teamId}/join`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        }
+      });
+      
+      if (res.ok) {
+        alert("Joined team!");
+        loadTeams();
+      }
+    }
+    
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

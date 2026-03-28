@@ -1,34 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>HERathon Dashboard</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HERathon — Dashboard</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
 </head>
 <body>
-  <div class="app">
-    <h1>HERathon</h1>
 
-    <section id="dashboard" class="card dashboard">
-      <h2>Dashboard</h2>
-      <p>Logged in as <span id="currentRole"></span></p>
+  <!-- Global nav injected by shared-nav.js -->
+  <script src="shared-nav.js"></script>
 
-      <div class="dashboard-columns">
+  <div class="page-wrapper">
+    <div id="dashboardContent" class="dashboard-container">
+
+      <!-- Page header -->
+      <div class="page-header">
         <div>
-          <h3>Challenges</h3>
-          <button onclick="getChallenges()">Load Challenges</button>
-          <ul id="challengeList"></ul>
-        </div>
-
-        <div>
-          <h3>Teams</h3>
-          <button onclick="getTeams()">Load Teams</button>
-          <ul id="teamList"></ul>
+          <h2 class="page-title">🗺️ Your Game Hub</h2>
+          <p>Track your progress, unlock challenges, earn rewards.</p>
         </div>
       </div>
-    </section>
+
+      <!-- Gamification panel -->
+      <div class="gamification-panel" id="gamification">
+        <div class="gamification-stats">
+          <div class="gamification-stat">
+            <span class="label">👤 Player</span>
+            <span class="value" id="name">—</span>
+          </div>
+          <div class="gamification-stat">
+            <span class="label">⭐ Level</span>
+            <span class="value primary" id="level">1</span>
+          </div>
+          <div class="gamification-stat">
+            <span class="label">💠 Points</span>
+            <span class="value success" id="points">0</span>
+          </div>
+          <div class="gamification-stat">
+            <span class="label">🏅 Badges</span>
+            <span class="value" id="badges" style="font-size:1rem; color:var(--text-muted);">None yet</span>
+          </div>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="progressFill" style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Topic tree -->
+      <div id="topicTree" class="topic-tree">
+        <!-- Injected by dashboard.js -->
+      </div>
+
+    </div>
   </div>
 
-  <script src="script.js"></script>
+  <script src="dashboard.js"></script>
 </body>
 </html>
-

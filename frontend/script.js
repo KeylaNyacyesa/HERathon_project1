@@ -1,5 +1,10 @@
 const API_URL = "http://localhost:5000";
 
+// Load toast notification system
+const toastScript = document.createElement('script');
+toastScript.src = 'toast.js';
+document.head.appendChild(toastScript);
+
 // Simple check that the script is actually running
 window.addEventListener("load", () => {
   console.log("frontend script loaded");
@@ -20,14 +25,14 @@ async function register() {
     if (!name || !email || !password || !passwordConfirm) {
       const msg = "Please fill in all fields.";
       if (statusEl) statusEl.textContent = msg;
-      alert(msg);
+      showError(msg);
       return;
     }
 
     if (password !== passwordConfirm) {
       const msg = "Passwords do not match.";
       if (statusEl) statusEl.textContent = msg;
-      alert(msg);
+      showError(msg);
       return;
     }
 
@@ -49,12 +54,12 @@ async function register() {
     console.log("register() response body", data);
 
     if (statusEl) statusEl.textContent = data.message || "Register request sent";
-    alert(data.message || "Register request sent");
+    showSuccess(data.message || "Register request sent");
   } catch (err) {
     console.error("register() error", err);
     const statusEl = document.getElementById("status");
     if (statusEl) statusEl.textContent = "Register failed: " + err.message;
-    alert("Register failed: " + err.message);
+    showError("Register failed: " + err.message);
   }
 }
 
@@ -66,13 +71,26 @@ async function getChallenges() {
     const list = document.getElementById("challengeList");
     list.innerHTML = "";
 
+    const userLevel = 1; // TEMP
+    const userId = localStorage.getItem("userId");
+
     data.forEach((challenge) => {
       const li = document.createElement("li");
-      li.textContent = challenge.title + " - Level " + challenge.level;
+
+      if (challenge.level > userLevel) {
+        li.textContent = `🔒 ${challenge.title} (Level ${challenge.level})`;
+        li.style.opacity = "0.5";
+      } else {
+        li.innerHTML = `
+          ${challenge.title} (Level ${challenge.level})
+          <button onclick="completeChallenge('${challenge._id}')">Complete</button>
+        `;
+      }
+
       list.appendChild(li);
     });
   } catch (err) {
-    alert("Failed to load challenges: " + err.message);
+    showError("Failed to load challenges: " + err.message);
   }
 }
 
@@ -100,7 +118,7 @@ async function login() {
     if (!res.ok) {
       const msg = data.message || "Login failed";
       if (statusEl) statusEl.textContent = msg;
-      alert(msg);
+      showError(msg);
       return;
     }
 
@@ -108,22 +126,20 @@ async function login() {
     localStorage.setItem("token", data.token);
     localStorage.setItem("role", data.user.role);
     localStorage.setItem("name", data.user.name);
+    localStorage.setItem("userId", data.user.id);
+    localStorage.setItem("user", JSON.stringify(data.user));
 
-    if (statusEl) statusEl.textContent = "Login successful";
+    if (statusEl) statusEl.textContent = "Login successful! Redirecting to dashboard...";
 
-    const dashboard = document.getElementById("dashboard");
-    const currentRole = document.getElementById("currentRole");
-    if (dashboard) dashboard.style.display = "block";
-    if (currentRole) currentRole.textContent = `${data.user.role} (${data.user.name})`;
-
-    // Load some initial data depending on role
-    await getChallenges();
-    await getTeams();
+    // Redirect directly to dashboard
+    setTimeout(() => {
+      window.location.href = "dashboard.html";
+    }, 1000);
   } catch (err) {
     console.error("login() error", err);
     const statusEl = document.getElementById("loginStatus");
     if (statusEl) statusEl.textContent = "Login failed: " + err.message;
-    alert("Login failed: " + err.message);
+    showError("Login failed: " + err.message);
   }
 }
 
@@ -141,6 +157,21 @@ async function getTeams() {
       list.appendChild(li);
     });
   } catch (err) {
-    alert("Failed to load teams: " + err.message);
+    showError("Failed to load teams: " + err.message);
   }
+}
+
+async function completeChallenge(id) {
+  const userId = localStorage.getItem("userId");
+
+  await fetch(`${API_URL}/challenges/complete/${id}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ userId })
+  });
+
+  showSuccess("Challenge completed!");
+  getChallenges();
 }

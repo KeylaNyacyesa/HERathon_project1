@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    <nav>
+      <a href="dashboard.html">← Dashboard</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+    <h1>📩 Contact Us</h1>
+    <form id="contactForm" class="card">
+      <label>
+        Name
+        <input id="contactName" required>
+      </label>
+      <label>
+        Email
+        <input id="contactEmail" type="email" required>
+      </label>
+      <label>
+        Message
+        <textarea id="contactMessage" required></textarea>
+      </label>
+      <button type="submit">Send Message</button>
+    </form>
+    <p id="contactStatus"></p>
+  </div>
+  <script>
+    const API_URL = "http://localhost:5000";
+    document.getElementById("contactForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const token = localStorage.getItem("token");
+      const data = {
+        name: document.getElementById("contactName").value,
+        email: document.getElementById("contactEmail").value,
+        message: document.getElementById("contactMessage").value
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/contact`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify(data)
+        });
+        if (res.ok) {
+          document.getElementById("contactStatus").textContent = "✅ Message sent!";
+          document.getElementById("contactForm").reset();
+        } else {
+          document.getElementById("contactStatus").textContent = "❌ Send failed";
+        }
+      } catch (err) {
+        document.getElementById("contactStatus").textContent = "❌ Error: " + err.message;
+      }
+    });
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Select Topics - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    <nav>
+      <a href="select-courses.html">← Back to Courses</a>
+    </nav>
+    <h1>📖 Select Your Topics</h1>
+
+    <div id="topicsList"></div>
+    <button onclick="saveTopics()" id="saveTopicsBtn" disabled>Complete Profile →</button>
+    <p id="status"></p>
+  </div>
+  <script>
+    const API_URL = "http://localhost:5000";
+    const topicsData = {
+      'Mathematics': ['Calculus', 'Algebra', 'Geometry', 'Statistics'],
+      'Biology': ['Cell Biology & Molecular Biology', 'Genetics & Heredity', 'Ecology & Environment', 'Bioenergetics'],
+      'Chemistry': ['Atomic Structure & Properties', 'Bonding & Molecular Structure', 'Chemical Reactions & Stoichiometry', 'Organic Chemistry', 'Reaction Kinetics & Equilibrium'],
+      'Physics': ['Classical Mechanics', 'Thermodynamics & Statistical Mechanics', 'Electromagnetism', 'Optics', 'Waves and Vibrations', 'Quantum Mechanics', 'Relativity'],
+      'Computer Science': ['Algorithms and Data Structures', 'Programming Languages', 'Computer Architecture', 'Operating Systems', 'Database Management Systems', 'Computer Networks']
+    };
+    const selectedTopics = new Set();
+    
+    async function loadCourses() {
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const profile = await res.json();
+      const courses = profile.user.courses || [];
+      
+      const list = document.getElementById('topicsList');
+      list.innerHTML = '';
+      
+      courses.forEach(course => {
+        const section = document.createElement('section');
+        section.className = 'panel';
+        section.innerHTML = `<h3>${course}</h3>`;
+        const topicList = document.createElement('div');
+        topicList.className = 'challenge-grid';
+        (topicsData[course] || []).forEach(topic => {
+          const card = document.createElement('label');
+          card.className = 'nav-card';
+          card.dataset.topic = topic;
+          card.innerHTML = `
+            <h4>${topic}</h4>
+          `;
+          topicList.appendChild(card);
+        });
+        section.appendChild(topicList);
+        list.appendChild(section);
+      });
+      
+      updateButton();
+    }
+    
+    function toggleTopic(event) {
+      const label = event.currentTarget;
+      const topic = label.dataset.topic;
+      if (selectedTopics.has(topic)) {
+        selectedTopics.delete(topic);
+        label.classList.remove('selected');
+      } else {
+        selectedTopics.add(topic);
+        label.classList.add('selected');
+      }
+      updateButton();
+    }
+
+    // Delegation for topic clicks
+    document.addEventListener('click', (event) => {
+      const card = event.target.closest('.nav-card[data-topic]');
+      if (card) {
+        toggleTopic({ currentTarget: card });
+      }
+    });
+    
+    function updateButton() {
+      const btn = document.getElementById('saveTopicsBtn');
+      btn.disabled = selectedTopics.size === 0;
+    }
+    
+    async function saveTopics() {
+      const topics = Array.from(selectedTopics);
+      if (topics.length === 0) {
+        const statusEl = document.getElementById('status');
+        const btn = document.getElementById('saveTopicsBtn');
+        statusEl.textContent = "Please select at least one topic to continue";
+        btn.style.background = '#ef4444';
+        setTimeout(() => {
+          btn.style.background = '';
+        }, 1000);
+        return;
+      }
+      const token = localStorage.getItem('token');
+      const res = await fetch(`${API_URL}/users/topics`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ topics })
+      });
+      if (res.ok) {
+        localStorage.setItem('hasTopics', 'true');
+        window.location.href = 'profile.html?required=true';
+      } else {
+        const data = await res.json();
+        document.getElementById('status').textContent = data.message || 'Error saving topics';
+      }
+    }
+    
+    window.onload = loadCourses;
+  </script>
+</body>
+</html>

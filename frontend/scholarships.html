@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scholarships - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    <nav>
+      <a href="dashboard.html">← Dashboard</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+    
+    <h1>🎓 Scholarship Opportunities</h1>
+    <p style="text-align: center; margin-bottom: 2rem;">Level up your skills to unlock exclusive STEM scholarships and grants.</p>
+    
+    <div id="scholarshipGate" class="gamification-panel" style="display: none;">
+      <h3 style="color: var(--danger);">🔒 Level Too Low</h3>
+      <p>You must reach <span style="font-weight: 800;">Level 3</span> to apply for scholarships.</p>
+      <p>Current Level: <span id="currentLevelSpan" style="color: var(--danger);">1</span></p>
+    </div>
+
+    <div class="cards" id="scholarshipsList">
+      <!-- Scholarship Cards injected here -->
+    </div>
+  </div>
+
+  <script src="toast.js"></script>
+  <script>
+    const API_URL = "http://localhost:5000";
+
+    // Hardcoded sample data for MVP demonstration
+    const sampleScholarships = [
+      {
+        id: "s1",
+        title: "Women in Tech Africa Grant",
+        provider: "TechCorp Foundation",
+        amount: "$5,000",
+        deadline: "2026-06-30",
+        reqLevel: 3,
+        description: "Aimed at helping young African women pursue computer science degrees."
+      },
+      {
+        id: "s2",
+        title: "STEM Innovators Fellowship",
+        provider: "Global Science Org",
+        amount: "$2,500 + Mentorship",
+        deadline: "2026-08-15",
+        reqLevel: 4,
+        description: "For excellent performers in Biology and Mathematics challenges."
+      }
+    ];
+
+    window.onload = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) return window.location.href = "index.html";
+
+      try {
+        const res = await fetch(`${API_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        const data = await res.json();
+        
+        renderScholarships(data.user.level);
+      } catch (err) {
+        showError("Failed to load profile data.");
+      }
+    };
+
+    function renderScholarships(userLevel) {
+      const gate = document.getElementById("scholarshipGate");
+      const list = document.getElementById("scholarshipsList");
+      
+      if (userLevel < 3) {
+        gate.style.display = "block";
+        document.getElementById("currentLevelSpan").textContent = userLevel;
+      } else {
+        gate.style.display = "none";
+      }
+
+      list.innerHTML = sampleScholarships.map(sch => {
+        const isLocked = userLevel < sch.reqLevel;
+        return `
+          <div class="card" style="${isLocked ? 'opacity: 0.6;' : ''}">
+            <h3 style="color: var(--primary); margin-bottom: 0.5rem;">${sch.title} 
+              ${isLocked ? '🔒' : '🔓'}
+            </h3>
+            <p style="font-weight: 600; color: var(--text-main);">${sch.provider} • <span style="color: var(--success);">${sch.amount}</span></p>
+            <p style="margin: 1rem 0; font-size: 0.95rem;">${sch.description}</p>
+            <p style="margin-bottom: 1.5rem; font-size: 0.85rem;"><strong>Deadline:</strong> ${sch.deadline}</p>
+            
+            ${isLocked ? 
+              `<button disabled>Requires Level ${sch.reqLevel}</button>` : 
+              `<button class="btn-success" onclick="applyScholarship('${sch.id}')">Apply Now</button>`
+            }
+          </div>
+        `;
+      }).join("");
+    }
+
+    function applyScholarship(id) {
+      // Mock application
+      showSuccess("Application submitted successfully! Good luck! 🌟");
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submission Review - HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+</head>
+<body>
+
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
+  <div class="app">
+    <nav>
+      <a href="dashboard.html">← Dashboard</a>
+      <button onclick="logout()">Logout</button>
+    </nav>
+    <h1>📋 Submission Reviews</h1>
+
+    <div class="submissions-container">
+      <div id="submissionsList" class="submissions-list"></div>
+    </div>
+  </div>
+
+  <script src="toast.js"></script>
+  <script src="toast.js"></script>
+  <script>
+    const API_URL = "http://localhost:5000";
+    let allSubmissions = [];
+
+    window.onload = async function() {
+      const token = localStorage.getItem("token");
+      const role = localStorage.getItem("role");
+      
+      if (!token || role !== "mentor") {
+        window.location.href = "dashboard.html";
+        return;
+      }
+
+      await loadSubmissions();
+    };
+
+    async function loadSubmissions() {
+      const token = localStorage.getItem("token");
+      try {
+        // Load all submissions for mentor review
+        const res = await fetch(`${API_URL}/submissions?status=Under Review`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        allSubmissions = await res.json();
+        renderSubmissions();
+      } catch (err) {
+        console.error("Error loading submissions:", err);
+        document.getElementById("submissionsList").innerHTML = "<p>Error loading submissions</p>";
+      }
+    }
+
+    function renderSubmissions() {
+      const container = document.getElementById("submissionsList");
+      
+      if (!allSubmissions || allSubmissions.length === 0) {
+        container.innerHTML = "<p class='no-submissions'>No pending submissions. Great work! 🎉</p>";
+        return;
+      }
+
+      container.innerHTML = allSubmissions.map(sub => {
+        const student = sub.userId || {};
+        const challenge = sub.challengeId || {};
+        
+        return `
+          <div class="submission-card">
+            <div class="submission-header">
+              <h3>${challenge.title || "Unknown Challenge"}</h3>
+              <small>Level ${challenge.level || 1}</small>
+            </div>
+            
+            <div class="submission-body">
+              <p><strong>Student:</strong> ${student.name || "Unknown"}</p>
+              <p><strong>Attempt:</strong> ${sub.attempts || 1}</p>
+              <p><strong>Submitted:</strong> ${new Date(sub.submittedAt).toLocaleDateString()}</p>
+              
+              <div class="submission-links">
+                <p><strong>Project Link:</strong> <a href="${sub.projectLink}" target="_blank">${sub.projectLink}</a></p>
+                <p><strong>Description:</strong></p>
+                <div class="submission-description">${sub.description || "No description provided"}</div>
+              </div>
+            </div>
+
+            <div class="submission-review">
+              <textarea id="feedback-${sub._id}" placeholder="Provide feedback..." class="review-textarea"></textarea>
+              <div class="review-buttons">
+                <button class="btn-approve" onclick="reviewSubmission('${sub._id}', 'Approved')">✅ Approve & Award Points</button>
+                <button class="btn-reject" onclick="reviewSubmission('${sub._id}', 'Rejected')">❌ Reject</button>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    async function reviewSubmission(submissionId, status) {
+      const token = localStorage.getItem("token");
+      const feedback = document.getElementById(`feedback-${submissionId}`).value || "No feedback";
+
+      try {
+        const res = await fetch(`${API_URL}/submissions/${submissionId}/review`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`
+          },
+          body: JSON.stringify({ status, feedback })
+        });
+
+        if (res.ok) {
+          showSuccess(`Submission ${status.toLowerCase()}! Student has been notified.`);
+          await loadSubmissions();
+        } else {
+          showError("Error reviewing submission");
+        }
+      } catch (err) {
+        console.error("Review error:", err);
+        showError("Failed to submit review");
+      }
+    }
+
+    function logout() {
+      localStorage.clear();
+      window.location.href = "index.html";
+    }
+  </script>
+
+  <style>
+    .submissions-container {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .submissions-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .submission-card {
+      background: #1e293b;
+      border: 1px solid #3b82f6;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+
+    .submission-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      border-bottom: 1px solid #334155;
+      padding-bottom: 10px;
+    }
+
+    .submission-header h3 {
+      margin: 0;
+      color: #fff;
+    }
+
+    .submission-header small {
+      background: #3b82f6;
+      padding: 4px 12px;
+      border-radius: 4px;
+      color: white;
+      font-size: 12px;
+    }
+
+    .submission-body {
+      margin: 15px 0;
+      color: #cbd5e1;
+    }
+
+    .submission-body p {
+      margin: 8px 0;
+    }
+
+    .submission-links {
+      background: #0f172a;
+      padding: 12px;
+      border-radius: 6px;
+      margin: 10px 0;
+    }
+
+    .submission-links a {
+      color: #60a5fa;
+      text-decoration: none;
+      word-break: break-all;
+    }
+
+    .submission-links a:hover {
+      text-decoration: underline;
+    }
+
+    .submission-description {
+      background: #1e293b;
+      padding: 10px;
+      border-left: 3px solid #10b981;
+      margin-top: 8px;
+      color: #e2e8f0;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .submission-review {
+      margin-top: 15px;
+      padding-top: 15px;
+      border-top: 1px solid #334155;
+    }
+
+    .review-textarea {
+      width: 100%;
+      height: 100px;
+      padding: 10px;
+      border: 1px solid #334155;
+      border-radius: 6px;
+      background: #0f172a;
+      color: white;
+      font-family: inherit;
+      margin-bottom: 10px;
+      box-sizing: border-box;
+    }
+
+    .review-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-approve,
+    .btn-reject {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: bold;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    .btn-approve {
+      background: #10b981;
+      color: white;
+    }
+
+    .btn-approve:hover {
+      background: #059669;
+    }
+
+    .btn-reject {
+      background: #ef4444;
+      color: white;
+    }
+
+    .btn-reject:hover {
+      background: #dc2626;
+    }
+
+    .no-submissions {
+      text-align: center;
+      padding: 40px 20px;
+      color: #94a3b8;
+      font-size: 18px;
+    }
+
+    @media (max-width: 768px) {
+      .submission-header {
+        flex-direction: column;
+        gap: 10px;
+        align-items: flex-start;
+      }
+
+      .review-buttons {
+        flex-direction: column;
+      }
+    }
+  </style>
+</body>
+</html>

@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile — HERathon</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
+</head>
+<body>
+
+  <script src="shared-nav.js"></script>
+
+  <div class="page-wrapper" style="max-width:800px;">
+
+    <div class="page-header">
+      <div>
+        <h2 class="page-title">👤 Your Profile</h2>
+        <p>Manage your HERathon adventure and account details.</p>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">🏅 Account Overview</div>
+
+      <div id="userInfo" style="margin-bottom:2rem; padding:1.5rem; background:var(--bg-dark); border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
+        <p style="color:var(--text-faint);">Loading profile…</p>
+      </div>
+
+      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
+        <button onclick="logout()" class="btn-danger" style="width:auto;">🚪 Sign Out</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="toast.js"></script>
+  <script>
+    function loadProfile() {
+      const userStr = localStorage.getItem("user");
+      if (!userStr) return window.location.href = "index.html";
+      const user = JSON.parse(userStr);
+
+      document.getElementById("userInfo").innerHTML = `
+        <div style="display:grid; grid-template-columns: 80px 1fr; gap: 1.5rem; align-items:center; margin-bottom:1.5rem;">
+          <div class="avatar-circle" style="width:72px; height:72px; font-size:2rem; background:linear-gradient(135deg,#6366f1,#ec4899); margin:0;">
+            ${(user.name || "U").charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <h3 style="font-size:1.4rem; color:var(--text-main); margin-bottom:0.25rem;">${user.name}</h3>
+            <p style="margin:0; color:var(--text-muted); font-size:0.95rem;">${user.email}</p>
+            <span class="badge badge-primary" style="margin-top:0.5rem; display:inline-flex;">${(user.role || "student").charAt(0).toUpperCase() + (user.role || "student").slice(1)}</span>
+          </div>
+        </div>
+        <hr style="border:none; border-top:1px dashed var(--border-subtle); margin:0 0 1.25rem;">
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;">
+          <div class="gamification-stat">
+            <span class="label">⭐ Level</span>
+            <span class="value primary">${user.level || 1}</span>
+          </div>
+          <div class="gamification-stat">
+            <span class="label">💠 Points</span>
+            <span class="value success">${user.points || 0} XP</span>
+          </div>
+          <div class="gamification-stat">
+            <span class="label">🏅 Badges</span>
+            <span class="value" style="font-size:1rem; color:var(--text-muted);">${user.badges?.length ? user.badges.join(", ") : "None yet"}</span>
+          </div>
+        </div>
+      `;
+    }
+
+    function logout() {
+      localStorage.clear();
+      showSuccess("Signing you out securely…");
+      setTimeout(() => { window.location.href = "index.html"; }, 1500);
+    }
+
+    window.onload = loadProfile;
+  </script>
+</body>
+</html>

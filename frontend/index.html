@@ -1,86 +1,80 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>HERathon</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HERathon — Empowering Women in STEM</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="toast.css">
 </head>
-
 <body>
-  <div class="app">
-    <h1>HERathon</h1>
+  <div class="auth-wrapper">
+    <div class="auth-container">
 
-    <div class="cards">
-      <section class="card">
-        <h2>Create your account</h2>
-
-        <label>
-          Name
-          <input id="name" placeholder="Name" />
-        </label>
-
-        <label>
-          Email
-          <input id="email" placeholder="Email" />
-        </label>
-
-        <label>
-          Password
-          <input id="password" type="password" placeholder="Password" />
-        </label>
-
-        <label>
-          Confirm password
-          <input id="passwordConfirm" type="password" placeholder="Confirm password" />
-        </label>
-
-        <label>
-          What best describes you?
-          <select id="role">
-            <option value="student">Student</option>
-            <option value="mentor">Mentor</option>
-          </select>
-        </label>
-
-        <button onclick="register()">Register</button>
-        <p id="status" class="status status-register"></p>
-      </section>
-
-      <section class="card">
-        <h2>Login</h2>
-
-        <label>
-          Email
-          <input id="loginEmail" placeholder="Email" />
-        </label>
-
-        <label>
-          Password
-          <input id="loginPassword" type="password" placeholder="Password" />
-        </label>
-
-        <button onclick="login()">Login</button>
-        <p id="loginStatus" class="status status-login"></p>
-      </section>
-    </div>
-
-    <section id="dashboard" class="card dashboard" style="display:none;">
-      <h2>Dashboard</h2>
-      <p>Logged in as <span id="currentRole"></span></p>
-
-      <div class="dashboard-columns">
+      <!-- Hero / Branding -->
+      <div class="auth-hero">
         <div>
-          <h3>Challenges</h3>
-          <button onclick="getChallenges()">Load Challenges</button>
-          <ul id="challengeList"></ul>
+          <p style="font-size:2rem; margin-bottom:0.5rem;">🎮</p>
+          <h1>HERathon</h1>
+          <p style="margin-top:1rem; font-size:1.05rem; line-height:1.7;">
+            A gamified innovation platform empowering young women across Africa to
+            build STEM skills, collaborate, and launch real careers.
+          </p>
         </div>
-
-        <div>
-          <h3>Teams</h3>
-          <button onclick="getTeams()">Load Teams</button>
-          <ul id="teamList"></ul>
+        <div class="auth-features">
+          <div class="auth-feature">
+            <div class="auth-feature-icon">⚔️</div>
+            <span>Level-based challenges that grow with you</span>
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">🧠</div>
+            <span>Expert mentors to guide your journey</span>
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">🎓</div>
+            <span>Scholarships & funding opportunities</span>
+          </div>
+          <div class="auth-feature">
+            <div class="auth-feature-icon">👥</div>
+            <span>Collaborate with teams across Africa</span>
+          </div>
         </div>
       </div>
-    </section>
+
+      <!-- Auth Cards -->
+      <div class="auth-cards">
+        <!-- Register -->
+        <div class="card">
+          <div class="card-title">✨ Create your account</div>
+
+          <label>Name<input id="name" placeholder="Your full name" /></label>
+          <label>Email<input id="email" type="email" placeholder="you@example.com" /></label>
+          <label>Password<input id="password" type="password" placeholder="Min. 8 characters" /></label>
+          <label>Confirm password<input id="passwordConfirm" type="password" placeholder="Repeat password" /></label>
+          <label>I am a…
+            <select id="role">
+              <option value="student">Student / Early-career</option>
+              <option value="mentor">Mentor</option>
+            </select>
+          </label>
+
+          <button class="full-width" onclick="register()">🚀 Create account</button>
+          <p id="status" class="status status-register"></p>
+        </div>
+
+        <!-- Login -->
+        <div class="card">
+          <div class="card-title">🔑 Sign in</div>
+
+          <label>Email<input id="loginEmail" type="email" placeholder="you@example.com" /></label>
+          <label>Password<input id="loginPassword" type="password" placeholder="Your password" /></label>
+
+          <button class="full-width" onclick="login()">Sign in →</button>
+          <p id="loginStatus" class="status status-login"></p>
+        </div>
+      </div>
+
+    </div>
   </div>
 
   <script src="script.js"></script>
