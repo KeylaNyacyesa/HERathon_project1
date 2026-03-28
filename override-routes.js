@@ -1,4 +1,6 @@
-const express = require("express");
+const fs = require('fs');
+
+let code = `const express = require("express");
 const router = express.Router();
 const Submission = require("../models/Submission");
 const User = require("../models/User");
@@ -153,3 +155,7 @@ router.put("/:id/review", async (req, res) => {
 });
 
 module.exports = router;
+`;
+
+fs.writeFileSync('backend/routes/submissions.js', code);
+console.log('Fixed backend properly!');
