@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">        
   <title>Profile — HERathon</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="toast.css">
+  <style>
+    .profile-card { padding:1.5rem; background:var(--bg-dark); border-radius:var(--radius-md); border:1px solid var(--border-subtle); margin-bottom: 2rem; }
+    .btn-group { display:flex; gap:1rem; flex-wrap:wrap; }
+    .form-group { margin-bottom: 1.5rem; }
+    .form-label { color:var(--text-muted); font-size:0.9rem; margin-bottom:0.25rem; display:block; font-weight: 500; }
+    .form-input, .form-textarea { width:100%; border: 1px solid var(--border-color); background: var(--bg-dark); color: var(--text-main); padding: 0.75rem; border-radius: var(--radius-md); font-family: inherit; }
+  </style>
 </head>
 <body>
 
+  <!-- Injected nav -->
   <script src="shared-nav.js"></script>
 
   <div class="page-wrapper" style="max-width:800px;">
@@ -20,74 +28,250 @@
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-title">🏅 Account Overview</div>
+    <div class="card" id="profileView" style="display: none;">
+      <div class="card-title">✨ Account Overview</div>
 
-      <div id="userInfo" style="margin-bottom:2rem; padding:1.5rem; background:var(--bg-dark); border-radius:var(--radius-md); border:1px solid var(--border-subtle);">
-        <p style="color:var(--text-faint);">Loading profile…</p>
+      <div class="profile-card" id="userInfo">
+        <p style="color:var(--text-faint);">Loading profile...</p>
       </div>
 
-      <div style="display:flex; gap:1rem; flex-wrap:wrap;">
-        <button onclick="logout()" class="btn-danger" style="width:auto;">🚪 Sign Out</button>
+      <div class="btn-group">
+        <button onclick="toggleEditMode()" class="btn-secondary" style="width:auto; border-radius: var(--radius-pill);">✏️ Edit Profile</button>
+        <button id="manageCoursesBtn" onclick="window.location.href='select-courses.html'" class="btn-primary" style="width:auto; display:none; border-radius: var(--radius-pill);">📚 Manage Courses</button>
+        <button onclick="logout()" class="btn-danger" style="width:auto; border-radius: var(--radius-pill); border: 1px solid #ef4444; background: rgba(239,68,68,0.1); color: #ef4444;">🚪 Sign Out</button>
       </div>
+    </div>
+
+    <!-- Edit Profile Section -->
+    <div id="editProfileSection" class="card" style="display:none;">
+       <div class="card-title">✏️ Edit Profile Details</div>
+       <form id="editProfileForm" onsubmit="saveProfile(event)" style="display:flex; flex-direction:column;">
+          
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input type="text" id="editName" class="form-input" required />
+          </div>
+
+          <div style="display:flex; gap: 1rem; margin-bottom: 1.5rem;">
+            <div style="flex:1;">
+              <label class="form-label">First Name</label>
+              <input type="text" id="editFirstName" class="form-input" />
+            </div>
+            <div style="flex:1;">
+              <label class="form-label">Last Name</label>
+              <input type="text" id="editLastName" class="form-input" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">School / Institution</label>
+            <input type="text" id="editSchool" class="form-input" placeholder="E.g. University of technology..." />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Bio</label>
+            <textarea id="editBio" class="form-textarea" rows="3" placeholder="Tell us a little about yourself..."></textarea>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Skills</label>
+            <input type="text" id="editSkills" class="form-input" placeholder="E.g. HTML, CSS, React, Python" />
+            <small style="color:var(--text-faint); font-size: 0.8rem;">Separate skills with commas (e.g. JavaScript, UI/UX, Node.js)</small>
+          </div>
+
+          <div class="btn-group" style="margin-top: 1rem;">
+            <button type="submit" class="btn-primary" style="width:auto; border-radius: var(--radius-pill);">💾 Save Changes</button>
+            <button type="button" onclick="toggleEditMode()" class="btn-secondary" style="width:auto; border-radius: var(--radius-pill);">Cancel</button>
+          </div>
+       </form>
     </div>
 
   </div>
 
   <script src="toast.js"></script>
   <script>
-    function loadProfile() {
-      const userStr = localStorage.getItem("user");
-      if (!userStr) return window.location.href = "index.html";
-      const user = JSON.parse(userStr);
+    const API_URL = "https://herathonbackend.onrender.com";
+
+    async function loadProfile() {
+      const token = localStorage.getItem("token");
+      if (!token) return window.location.href = "index.html";
+      
+      try {
+        // Fetch up-to-date data from Backend
+        const res = await fetch(`${API_URL}/auth/me`, {
+          headers: { "Authorization": `Bearer ${token}` }
+        });
+        
+        if (!res.ok) throw new Error("Session expired");
+
+        const data = await res.json();
+        const user = data.user;
+        
+        // Sync local storage completely
+        localStorage.setItem("user", JSON.stringify(user));
+
+        renderProfileView(user);
+      } catch (err) {
+        console.error(err);
+        if(typeof showError === 'function') showError("Failed to fetch profile");
+      }
+    }
+
+    function renderProfileView(user) {
+      document.getElementById("profileView").style.display = "block";
+      document.getElementById("editProfileSection").style.display = "none";
+
+      if (user.role === 'student') {
+         document.getElementById('manageCoursesBtn').style.display = 'inline-flex';
+      }
+
+      const initial = (user.name || "U").charAt(0).toUpperCase();
+      const roleStr = (user.role || "student").charAt(0).toUpperCase() + (user.role || "student").slice(1);
+      
+      let badgesHtml = "None yet";
+      if (user.badges && user.badges.length > 0) {
+        badgesHtml = user.badges.join(", ");
+      }
+      
+      let skillsHtml = '<span style="color:var(--text-faint); font-size: 0.9rem;">No skills listed yet.</span>';
+      if (user.skills && user.skills.length > 0) {
+        let skillArray = typeof user.skills === 'string' ? user.skills.split(',') : user.skills;
+        skillsHtml = skillArray.map(s => `<span style="background:var(--bg-card); border:1px solid var(--border-subtle); padding: 0.25rem 0.6rem; border-radius:1rem; font-size:0.8rem; margin-right:0.5rem; margin-bottom:0.5rem; display:inline-block;">${s.trim()}</span>`).join('');
+      }
 
       document.getElementById("userInfo").innerHTML = `
         <div style="display:grid; grid-template-columns: 80px 1fr; gap: 1.5rem; align-items:center; margin-bottom:1.5rem;">
           <div class="avatar-circle" style="width:72px; height:72px; font-size:2rem; background:linear-gradient(135deg,#6366f1,#ec4899); margin:0;">
-            ${(user.name || "U").charAt(0).toUpperCase()}
+            ${initial}
           </div>
           <div>
-            <h3 style="font-size:1.4rem; color:var(--text-main); margin-bottom:0.25rem;">${user.name}</h3>
+            <h3 style="font-size:1.4rem; color:var(--text-main); margin-bottom:0.2rem;">${user.name || "Anonymous"}</h3>
             <p style="margin:0; color:var(--text-muted); font-size:0.95rem;">${user.email}</p>
-            <span class="badge badge-primary" style="margin-top:0.5rem; display:inline-flex;">${(user.role || "student").charAt(0).toUpperCase() + (user.role || "student").slice(1)}</span>
+            <span class="badge badge-primary" style="margin-top:0.4rem; display:inline-flex;">${roleStr}</span>
           </div>
         </div>
-        <hr style="border:none; border-top:1px dashed var(--border-subtle); margin:0 0 1.25rem;">
-        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 1rem;">
-          <div class="gamification-stat">
-            <span class="label">⭐ Level</span>
-            <span class="value primary">${user.level || 1}</span>
+        
+        <hr style="border:none; border-top:1px solid var(--border-subtle); margin: 1.5rem 0;">
+        
+        <div style="margin-bottom: 1.5rem;">
+          <h4 style="color:var(--text-main); font-size:1rem; margin-bottom:0.5rem;">Bio</h4>
+          <p style="color:var(--text-muted); font-size:0.95rem; margin:0; line-height:1.5;">${user.bio || "No bio added yet."}</p>
+        </div>
+
+        <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 1.5rem;">
+          <div>
+             <h4 style="color:var(--text-main); font-size:1rem; margin-bottom:0.4rem;">School / Institution</h4>
+             <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">${user.school || "Not specified"}</p>
           </div>
-          <div class="gamification-stat">
-            <span class="label">💠 Points</span>
-            <span class="value success">${user.points || 0} XP</span>
+          <div>
+             <h4 style="color:var(--text-main); font-size:1rem; margin-bottom:0.4rem;">Gamification Stats</h4>
+             <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">⭐ ${user.points || 0} Points &nbsp; | &nbsp; ⚡ Level ${user.level || 1}</p>
           </div>
-          <div class="gamification-stat">
-            <span class="label">🏅 Badges</span>
-            <span class="value" style="font-size:1rem; color:var(--text-muted);">${user.badges?.length ? user.badges.join(", ") : "None yet"}</span>
-          </div>
+        </div>
+
+        <div>
+          <h4 style="color:var(--text-main); font-size:1rem; margin-bottom:0.8rem;">Skills</h4>
+          <div>${skillsHtml}</div>
         </div>
       `;
     }
 
+    function toggleEditMode() {
+       const userStr = localStorage.getItem("user");
+       if (!userStr) return;
+       const user = JSON.parse(userStr);
+
+       const viewSection = document.getElementById("profileView");
+       const editSection = document.getElementById("editProfileSection");
+
+       if (editSection.style.display === "none") {
+          // Switch to edit mode
+          viewSection.style.display = "none";
+          editSection.style.display = "block";
+          
+          // Pre-fill fields
+          document.getElementById("editName").value = user.name || "";
+          document.getElementById("editFirstName").value = user.firstName || "";
+          document.getElementById("editLastName").value = user.lastName || "";
+          document.getElementById("editSchool").value = user.school || "";
+          document.getElementById("editBio").value = user.bio || "";
+          
+          let skillsValue = "";
+          if (user.skills) {
+            skillsValue = Array.isArray(user.skills) ? user.skills.join(", ") : user.skills;
+          }
+          document.getElementById("editSkills").value = skillsValue;
+
+       } else {
+          // Switch back to view mode
+          editSection.style.display = "none";
+          viewSection.style.display = "block";
+       }
+    }
+
+    async function saveProfile(e) {
+       e.preventDefault();
+       
+       const submitBtn = e.target.querySelector('button[type="submit"]');
+       submitBtn.disabled = true;
+       submitBtn.textContent = "Saving...";
+
+       const token = localStorage.getItem("token");
+       
+       const updatePayload = {
+         name: document.getElementById("editName").value.trim(),
+         firstName: document.getElementById("editFirstName").value.trim(),
+         lastName: document.getElementById("editLastName").value.trim(),
+         school: document.getElementById("editSchool").value.trim(),
+         bio: document.getElementById("editBio").value.trim(),
+         skills: document.getElementById("editSkills").value.trim()
+       };
+
+       try {
+          const res = await fetch(`${API_URL}/users/profile`, {
+            method: "PUT",
+            headers: { 
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${token}` 
+            },
+            body: JSON.stringify(updatePayload)
+          });
+          
+          if (!res.ok) {
+            const err = await res.json();
+            throw new Error(err.message || "Failed to update profile");
+          }
+
+          const data = await res.json();
+          if(typeof showSuccess === 'function') showSuccess("Profile updated successfully!");
+          
+          await loadProfile();
+       } catch (err) {
+          console.error(err);
+          if(typeof showError === 'function') showError(err.message);
+       } finally {
+          submitBtn.disabled = false;
+          submitBtn.textContent = "💾 Save Changes";
+       }
+    }
+
     function logout() {
       localStorage.clear();
-      showSuccess("Signing you out securely…");
+      if(typeof showSuccess === 'function') showSuccess("Signing you out securely...");
       setTimeout(() => { window.location.href = "index.html"; }, 1500);
     }
 
-    window.onload = loadProfile;
+    window.addEventListener("DOMContentLoaded", loadProfile);
   </script>
 
-<footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
+  <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
     <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
     <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">❓ Frequently Asked Questions</a>
-    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;">✉️ Contact Us</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">✉️ Contact Us</a>
   </div>
   <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
-    &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.
+    &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.  
   </div>
 </footer>
 </body>
