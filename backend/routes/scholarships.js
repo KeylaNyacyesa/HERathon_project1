@@ -1,14 +1,15 @@
 const express = require("express");
 const router = express.Router();
+const Scholarship = require("../models/Scholarship");
 
-// Basic scholarship listing for tracking
-router.get("/", (req, res) => {
-  const scholarships = [
-    { name: "HERathon Women in Tech", deadline: "2026-06-01" },
-    { name: "STEM Excellence Scholarship", deadline: "2026-09-15" },
-  ];
-
-  res.json(scholarships);
+// GET all scholarships
+router.get("/", async (req, res) => {
+  try {
+    const scholarships = await Scholarship.find().sort({ deadline: 1 });
+    res.json(scholarships);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
 });
 
 module.exports = router;

@@ -1,6 +1,8 @@
 require("dotenv").config({ override: true });
 
 const express = require("express");
+
+const PORT = process.env.PORT || 5000;
 const mongoose = require("mongoose");
 const cors = require("cors");
 
@@ -12,6 +14,7 @@ const scholarshipRoutes = require("./routes/scholarships");
 const mentorRoutes = require("./routes/mentors");
 const adminRoutes = require("./routes/admin");
 const notificationRoutes = require("./routes/notifications");
+const userRoutes = require("./routes/users");
 
 const app = express();
 app.use(cors());
@@ -20,17 +23,26 @@ app.use(express.json());
 const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI;
 console.log("Mongo URI:", mongoUri);
 mongoose.connect(mongoUri)
-.then(()=>console.log("MongoDB connected"))
-.catch(err=>console.log("MongoDB Error:", err));
+  .then(() => {
+    console.log("MongoDB connected");
+  })
+  .catch((err) => {
+    console.log("MongoDB Error:", err);
+  });
 
 app.use("/auth", authRoutes);
 app.use("/challenges", challengeRoutes);
+app.use("/users", userRoutes);
 app.use("/teams", teamRoutes);
 app.use("/submissions", submissionRoutes);
 app.use("/scholarships", scholarshipRoutes);
 app.use("/mentors", mentorRoutes);
 app.use("/admin", adminRoutes);
 app.use("/notifications", notificationRoutes);
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
 
 app.get("/", (req,res)=>{
     res.send("HERathon API running");
@@ -40,8 +52,12 @@ app.get("/foo", (req, res) => {
   res.send("Foo works");
 });
 
-const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, ()=>{
-    console.log(`Server running on port ${PORT}`);
+
+app.post("/contact", (req, res) => {
+  const { name, email, message } = req.body;
+
+  console.log("Contact:", name, email, message);
+
+  res.json({ message: "Message received!" });
 });
