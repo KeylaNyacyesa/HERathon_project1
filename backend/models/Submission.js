@@ -6,7 +6,7 @@ const SubmissionSchema = new mongoose.Schema({
  projectLink: String,
  description: String,
  feedback: String,
- status: { type: String, default: "Under Review" },
+ status: { type: String, default: "pending" },
  attempts: { type: Number, default: 1 },
  medal: {
    type: String,

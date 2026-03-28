@@ -131,7 +131,7 @@ router.post("/", auth, async (req, res) => {
       challengeId,
       projectLink: projectLink || "",
       description: description,
-      status: "Under Review"
+      status: "pending"
     });
 
     await submission.save();

@@ -71,7 +71,7 @@ async function loadDashboard() {
       });
       const submissions = await res.json();
       
-      const pendingCount = submissions.filter(s => s.status === "pending").length;
+      const pendingCount = submissions.filter(s => s.status === "pending" || s.status === "Under Review").length;
       const reviewedCount = submissions.filter(s => s.status === "approved" || s.status === "rejected").length;
       
       document.getElementById("pendingCount").textContent = pendingCount;
