@@ -15,17 +15,31 @@
   const user = userStr ? JSON.parse(userStr) : null;
   const userRole = user ? (user.role || "student") : "student";
 
-  let navLinks = [
-    { page: "dashboard", label: "🗺️ Hub" },
-    { page: "challenges", label: "⚔️ Challenges" },
-    { page: "teams", label: "👥 Teams" }
-  ];
+  let navLinks = [];
 
-  if (userRole === "student") {
-      navLinks.push({ page: "mentorship", label: "🧠 Mentorship" });
+  if (userRole === "mentor") {
+    navLinks = [
+      { page: "dashboard", label: "🗺️ Hub" },
+      { page: "submissions-review", label: "📋 Review Submissions" },
+      { page: "teams", label: "👥 Teams" },
+      { page: "scholarships", label: "🎓 Scholarships" }
+    ];
+  } else if (userRole === "admin") {
+    navLinks = [
+      { page: "dashboard", label: "🗺️ Hub" },
+      { page: "teams", label: "👥 Teams" },
+      { page: "scholarships", label: "🎓 Scholarships" }
+    ];
+  } else {
+    // Student
+    navLinks = [
+      { page: "dashboard", label: "🗺️ Hub" },
+      { page: "challenges", label: "⚔️ Challenges" },
+      { page: "teams", label: "👥 Teams" },
+      { page: "mentorship", label: "🧠 Mentorship" },
+      { page: "scholarships", label: "🎓 Scholarships" }
+    ];
   }
-  
-  navLinks.push({ page: "scholarships", label: "🎓 Scholarships" });
 
   if (currentPage === "index.html" || currentPage === "index") return;
 

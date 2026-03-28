@@ -133,7 +133,7 @@
 
       challengesData.slice(0, 20).forEach((challenge, index) => {
         const y = 120 + index * spacing;
-        const isUnlocked = challenge.level <= userLevel;
+        const isUnlocked = challenge.status === "unlocked" || challenge.status === "completed";
         const isCompleted = challenge.status === "completed";
         const submission = userSubmissions.find(s => s.challengeId && s.challengeId._id === challenge._id);
         const medal = submission?.medal || "none";

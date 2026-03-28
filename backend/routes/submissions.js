@@ -62,15 +62,7 @@ router.post("/", async (req, res) => {
       }
 
       finalDescription = answer;
-    }
-
-    let submission = await Submission.findOne({
-      userId: decoded.id,
-      challengeId
-    }).populate("challengeId");
-
-    if (submission) {
-      submission.attempts += 1;
+      finalStatus = "Approved";
       submission.projectLink = finalProjectLink;
       submission.description = finalDescription;
       submission.feedback = "";

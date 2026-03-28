@@ -52,5 +52,33 @@ router.get("/my-mentorships", async (req, res) => {
   }
 });
 
+// POST /request - Request mentorship
+router.post("/request", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.replace("Bearer ", "");
+    if (!token) {
+      return res.status(401).json({ message: "No token" });
+    }
+
+    const jwt = require("jsonwebtoken");
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "dev-secret");
+    const { mentorId, topic, message } = req.body;
+    
+    const Mentorship = require("../models/Mentorship");
+    const newMentorship = new Mentorship({
+      menteeId: decoded.id,
+      mentorId,
+      topic,
+      message,
+      status: "pending"
+    });
+    
+    await newMentorship.save();
+    res.status(201).json(newMentorship);
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 module.exports = router;
 

@@ -304,6 +304,13 @@ async function loadMyMentorships() {
 
 async function renderMentorDashboard() {
   const dashboard = document.getElementById("dashboardContent");
+  
+  // Hide student items
+  const topicTree = document.getElementById("topicTree");
+  if (topicTree) topicTree.style.display = "none";
+  const gamification = document.getElementById("gamification");
+  if (gamification) gamification.style.display = "none";
+
   dashboard.innerHTML = `
     <div class="mentor-panel">
       <h2>👨‍🏫 Mentor Dashboard</h2>
@@ -399,6 +406,13 @@ async function reviewSubmission(id, status) {
 
 async function renderAdminDashboard() {
   const dashboard = document.getElementById("dashboardContent");
+
+  // Hide student items
+  const topicTree = document.getElementById("topicTree");
+  if (topicTree) topicTree.style.display = "none";
+  const gamification = document.getElementById("gamification");
+  if (gamification) gamification.style.display = "none";
+
   dashboard.innerHTML = `
     <div class="admin-stats">
       <h3>Platform Stats</h3>

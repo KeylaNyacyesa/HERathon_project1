@@ -38,16 +38,16 @@ mongoose.connect(process.env.MONGO_URI || "mongodb://127.0.0.1:27017/herathon").
     { title: "Pathfinding Visualizer", description: "Implement a visualizer for Dijkstra's or A* algorithm in the browser. Submit your live link and repo.", course: "Computer Science", topic: "Algorithms and Data Structures", level: 4, points: 200 },
 
     // Biology -> Cell Biology
-    { title: "Cell Powerhouse", description: "What is considered the powerhouse of the cell?", course: "Biology", topic: "Cell Biology", level: 1, points: 50, correctAnswer: "Mitochondria" },
-    { title: "Plant vs Animal", description: "Name the organelle that plant cells have but animal cells do not. (Hint: Used for photosynthesis)", course: "Biology", topic: "Cell Biology", level: 2, points: 100, correctAnswer: "Chloroplast" },
-    { title: "Protein Factories", description: "Which organelles are responsible for protein synthesis?", course: "Biology", topic: "Cell Biology", level: 3, points: 150, correctAnswer: "Ribosomes" },
-    { title: "Cell Model Simulation", description: "Create a 3D or interactive digital model of a eukaryotic cell. Upload your project link.", course: "Biology", topic: "Cell Biology", level: 4, points: 200 },
-    
+    { title: "Cell Powerhouse", description: "What is considered the powerhouse of the cell?", course: "Biology", topic: "Cell Biology & Molecular Biology", level: 1, points: 50, correctAnswer: "Mitochondria" },
+    { title: "Plant vs Animal", description: "Name the organelle that plant cells have but animal cells do not. (Hint: Used for photosynthesis)", course: "Biology", topic: "Cell Biology & Molecular Biology", level: 2, points: 100, correctAnswer: "Chloroplast" },
+    { title: "Protein Factories", description: "Which organelles are responsible for protein synthesis?", course: "Biology", topic: "Cell Biology & Molecular Biology", level: 3, points: 150, correctAnswer: "Ribosomes" },
+    { title: "Cell Model Simulation", description: "Create a 3D or interactive digital model of a eukaryotic cell. Upload your project link.", course: "Biology", topic: "Cell Biology & Molecular Biology", level: 4, points: 200 },
+
     // Biology -> Genetics
-    { title: "DNA Base Pairs", description: "Which base always pairs with Adenine in DNA?", course: "Biology", topic: "Genetics", level: 1, points: 50, correctAnswer: "Thymine" },
-    { title: "Mendelian Traits", description: "If a trait skips a generation, is it likely dominant or recessive?", course: "Biology", topic: "Genetics", level: 2, points: 100, correctAnswer: "Recessive" },
-    { title: "Punnett Square", description: "What ratio of offspring are expected to show the recessive trait when two heterozygotes are crossed? (format: 1/4 or 25%)", course: "Biology", topic: "Genetics", level: 3, points: 150, correctAnswer: "25%" },
-    { title: "Genetics Algorithm", description: "Write a genetic algorithm in code that mimics natural selection to optimize a string. Provide the repo link.", course: "Biology", topic: "Genetics", level: 4, points: 200 }
+    { title: "DNA Base Pairs", description: "Which base always pairs with Adenine in DNA?", course: "Biology", topic: "Genetics & Heredity", level: 1, points: 50, correctAnswer: "Thymine" },
+    { title: "Mendelian Traits", description: "If a trait skips a generation, is it likely dominant or recessive?", course: "Biology", topic: "Genetics & Heredity", level: 2, points: 100, correctAnswer: "Recessive" },
+    { title: "Punnett Square", description: "What ratio of offspring are expected to show the recessive trait when two heterozygotes are crossed? (format: 1/4 or 25%)", course: "Biology", topic: "Genetics & Heredity", level: 3, points: 150, correctAnswer: "25%" },
+    { title: "Genetics Algorithm", description: "Write a genetic algorithm in code that mimics natural selection to optimize a string. Provide the repo link.", course: "Biology", topic: "Genetics & Heredity", level: 4, points: 200 }
   ];
 
   await Challenge.insertMany(sampleChallenges);

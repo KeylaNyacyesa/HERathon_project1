@@ -30,8 +30,8 @@ router.get("/", async (req, res) => {
       
       // Add status
       challenges = challenges.map(challenge => {
-        const isCompleted = user.completedChallenges.some(cc => cc._id.toString() === challenge._id.toString());
-        const isUnlocked = challenge.level <= user.level;
+        const isCompleted = user.completedChallenges.some(cc => cc && cc._id && cc._id.toString() === challenge._id.toString());
+        const isUnlocked = challenge.level === 1 || user.completedChallenges.some(cc => cc && cc.topic === challenge.topic && cc.level === challenge.level - 1);
         
         return {
           ...challenge.toObject(),
