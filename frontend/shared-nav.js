@@ -61,7 +61,7 @@
       <a href="${getLink("dashboard")}" class="header-brand">
         🎮 <span>HERathon</span>
       </a>
-      <nav class="header-nav" aria-label="Main navigation" style="display:flex; align-items:center; gap:0.5rem; justify-content: flex-start; flex:1; margin-left: 2rem;">
+      <nav class="header-nav" aria-label="Main navigation">
         ${navLinksHtml}
       </nav>
       <div class="header-actions">
