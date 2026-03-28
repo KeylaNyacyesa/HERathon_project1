@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000";
+const API_URL = "https://herathonbackend.onrender.com";
 const token = localStorage.getItem("token");
 
 // Load toast notification system

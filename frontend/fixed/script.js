@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:5000";
+const API_URL = "https://herathonbackend.onrender.com";
 
 // Load toast notification system
 const toastScript = document.createElement('script');
