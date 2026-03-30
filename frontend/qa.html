@@ -1,40 +1,63 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
-  <title>Q&A</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Q&A - HERathon</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Help & FAQs</h2>
+  <!-- Global nav -->
+  <script src="shared-nav.js"></script>
 
-<div class="faq-section" style="margin-bottom: 2rem;">
-  <h3>Common Technical Issues</h3>
-  <ul style="line-height: 1.6;">
-    <li><strong style="color: var(--primary, #6366f1);">I can't log in or reset password:</strong> Ensure you are using the correct email associated with your account. If you forgot your password, the reset link might be in your spam folder.</li>
-    <li><strong style="color: var(--primary, #6366f1);">Dashboard not loading:</strong> Try clearing your browser cache or switching to a different network. Make sure you are on a supported modern browser.</li>
-    <li><strong style="color: var(--primary, #6366f1);">Can't submit challenge solution:</strong> Ensure your file sizes are within the 10MB limit and in the accepted formats (PDF, DOCX, ZIP).</li>
-  </ul>
-</div>
+  <div class="app">
+    <h1 style="text-align: center; margin-bottom: 3rem;">Help & FAQs</h1>
 
-<h2>Q&A</h2>
+    <div class="card" style="margin-bottom: 2rem;">
+      <h3 style="margin-bottom: 1rem; color: var(--primary);">Common Technical Issues</h3>
+      <ul style="line-height: 1.6; margin-left: 1.5rem;">
+        <li style="margin-bottom: 0.5rem;"><strong style="color: var(--primary, #6366f1);">I can't log in or reset password:</strong> Ensure you are using the correct email associated with your account. If you forgot your password, the reset link might be in your spam folder.</li>
+        <li style="margin-bottom: 0.5rem;"><strong style="color: var(--primary, #6366f1);">Dashboard not loading:</strong> Try clearing your browser cache or switching to a different network. Make sure you are on a supported modern browser.</li>
+        <li><strong style="color: var(--primary, #6366f1);">Can't submit challenge solution:</strong> Ensure your file sizes are within the 10MB limit and in the accepted formats (link, PDF, DOCX, ZIP).</li>
+      </ul>
+    </div>
 
-<p><strong>What is HERathon?</strong></p>
-<p>A platform to empower women in STEM.</p>
+    <div class="card" style="margin-bottom: 2rem;">
+      <h3 style="margin-bottom: 1rem; color: var(--primary);">Q&A</h3>
 
-<p><strong>How do I level up?</strong></p>
-<p>Complete challenges to unlock new levels.</p>
+      <div style="margin-bottom: 1.5rem;">
+        <p style="font-weight: bold; margin-bottom: 0.5rem;">What is HERathon?</p>
+        <p>A platform to empower women in STEM through providing them with a fun and engaging system to keep them motivated to learn more.</p>
+      </div>
 
-<div style="margin: 3rem auto; padding: 1.5rem; background: var(--bg-card, #1e293b); border: 1px solid var(--border-subtle, #374151); border-radius: 8px; text-align: center; max-width: 600px;">
-  <h3 style="margin-bottom: 0.5rem;">Still need some help?</h3>
-  <p>Don't hesitate to <a href="contact.html" style="color: var(--primary, #6366f1); font-weight: bold; text-decoration: underline;">Contact us</a>.</p>
-</div>
+      <div style="margin-bottom: 1.5rem;">
+        <p style="font-weight: bold; margin-bottom: 0.5rem;">How do I level up?</p>
+        <p>Complete challenges to unlock new levels.</p>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <p style="font-weight: bold; margin-bottom: 0.5rem;">How do I access the specific scholarships I want?</p>
+        <p>Complete the challenge levels required to unlock the scholarships! <strong>TIP:</strong> Complete as many challenges as you want to unlock highly prestigious scholarship opportunities.</p>
+      </div>
+
+      <div style="margin-bottom: 1.5rem;">
+        <p style="font-weight: bold; margin-bottom: 0.5rem;">Where can I watch a tutorial of the game?</p>
+        <p>Click on the link below and check out our live demo.</p>
+      </div>
+    </div>
+
+    <div style="margin: 3rem auto; padding: 1.5rem; background: var(--bg-card, #1e293b); border: 1px solid var(--border-subtle, #374151); border-radius: 8px; text-align: center; max-width: 600px;">
+      <h3 style="margin-bottom: 0.5rem;">Still need some help?</h3>
+      <p>Don't hesitate to <a href="contact.html" style="color: var(--primary, #6366f1); font-weight: bold; text-decoration: underline;">Contact us</a>.</p>
+    </div>
+  </div>
 
   <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
     <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> About Us</a>
     <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Help</a>
     <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Frequently Asked Questions</a>
-    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;"> Contact Us</a>
+    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;"> Contact Us</a>      
   </div>
   <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
     &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.
