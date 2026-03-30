@@ -12,7 +12,7 @@ async function loadDashboard() {
   const user = JSON.parse(userStr);
   const role = user.role || "student";
 
-  const userNameEl = document.getElementById("userName");
+const userNameEl = document.getElementById("name") || document.getElementById("userName");
   if (userNameEl) userNameEl.textContent = user.name;
 
   const pageHeader = document.querySelector(".page-header");
@@ -25,14 +25,48 @@ async function loadDashboard() {
     if (topicTree) topicTree.style.display = "block";
     if (mentorDashboard) mentorDashboard.style.display = "none";
 
-    const userLevelEl = document.getElementById("userLevel");
-    if(userLevelEl) userLevelEl.textContent = user.level || 1;
-    const userPointsEl = document.getElementById("userPoints");
-    if(userPointsEl) userPointsEl.textContent = user.points || 0;
-    
-    const xpPercent = ((user.points || 0) % 100) + "%";
-    const xpFillEl = document.getElementById("xpFill");
-    if(xpFillEl) xpFillEl.style.width = xpPercent;
+    try {
+      const res = await fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (res.ok) {
+        const liveUser = await res.json();
+        
+        // Update user data locally just in case
+        localStorage.setItem("user", JSON.stringify(liveUser));
+        
+        const pts = liveUser.points || 0;
+        const lvl = liveUser.level || 1;
+
+        const userLevelEl = document.getElementById("level") || document.getElementById("userLevel");
+        if(userLevelEl) userLevelEl.textContent = lvl;
+        
+        const userPointsEl = document.getElementById("points") || document.getElementById("userPoints");
+        if(userPointsEl) userPointsEl.textContent = pts;
+        
+        const badgesEl = document.getElementById("badges");
+        if(badgesEl) {
+          if (pts >= 600) {
+            badgesEl.textContent = "Pro Player 🏆";
+            badgesEl.style.color = "gold";
+          } else if (pts >= 300) {
+            badgesEl.textContent = "Intermediate 🥈";
+            badgesEl.style.color = "silver";
+          } else if (pts >= 150) {
+            badgesEl.textContent = "Beginner 🥉";
+            badgesEl.style.color = "#cd7f32"; // Bronze
+          } else {
+            badgesEl.textContent = "None yet";
+          }
+        }
+        
+        const xpPercent = (pts % 100) + "%";
+        const xpFillEl = document.getElementById("progressFill") || document.getElementById("xpFill");
+        if(xpFillEl) xpFillEl.style.width = xpPercent;
+      }
+    } catch(err) {
+      console.error("Dashboard fetch err", err);
+    }
     
     if(typeof loadMyChallenges === 'function') loadMyChallenges(token);
 
