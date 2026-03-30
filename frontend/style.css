@@ -326,9 +326,9 @@ a:hover { color: #818cf8; }
 
 .auth-container {
   width: 100%;
-  max-width: 960px;
+  max-width: 1200px;
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1.5fr;
   gap: 2rem;
   align-items: start;
 }
@@ -384,9 +384,10 @@ a:hover { color: #818cf8; }
   flex-shrink: 0;
 }
 
+.auth-cards .card { flex: 1; }
 .auth-cards {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   gap: 1.5rem;
 }
 
@@ -904,6 +905,8 @@ h1.page-title {
    Responsive
    ========================================================================== */
 @media (max-width: 768px) {
+  .auth-cards { flex-direction: column; }
+
   :root { --nav-h: 60px; }
 
   .header-nav { display: none; }
