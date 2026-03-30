@@ -76,37 +76,76 @@
 
     async function loadPageGamification() {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/auth/me`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      const profile = await res.json();
-      document.getElementById("level").textContent = profile.user.level || 1;
-      document.getElementById("points").textContent = profile.user.points || 0;
-      updateProgress(profile.user);
+      if(!token) return;
+      try {
+        const res = await fetch(`${API_URL}/auth/me`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (!res.ok) {
+          if (res.status === 401 || res.status === 500) {
+            // Token likely expired, force logout
+            localStorage.clear();
+            window.location.href = "index.html";
+            return;
+          }
+          throw new Error("Not authorized");
+        }
+        const profile = await res.json();
+        document.getElementById("level").textContent = profile.user.level || 1; 
+        document.getElementById("points").textContent = profile.user.points || 0; 
+        updateProgress(profile.user);
+      } catch(err) {
+        console.error("Gamification error:", err);
+      }
     }
 
     async function loadUserSubmissions() {
       const token = localStorage.getItem("token");
-      const res = await fetch(`${API_URL}/submissions/my`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      userSubmissions = await res.json();
+      if(!token) return;
+      try {
+        const res = await fetch(`${API_URL}/submissions/my`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        if (res.ok) {
+          userSubmissions = await res.json();
+        } else {
+          userSubmissions = [];
+        }
+      } catch(err) {
+        userSubmissions = [];
+      }
     }
 
     async function loadChallenges() {
       const userId = localStorage.getItem("userId");
       const token = localStorage.getItem("token");
-      const urlParams = new URLSearchParams(window.location.search);
-      const topicOption = urlParams.get('topic') ? `&topic=${encodeURIComponent(urlParams.get('topic'))}` : '';
+      if(!token) return;
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const topicOption = urlParams.get('topic') ? `&topic=${encodeURIComponent(urlParams.get('topic'))}` : '';
 
-      const res = await fetch(`${API_URL}/challenges?userId=${userId}${topicOption}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      challengesData = await res.json();
-      await loadUserSubmissions();
-      renderChallengeMap();
-    }
+        const res = await fetch(`${API_URL}/challenges?userId=${userId}${topicOption}`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        if (res.status === 401 || res.status === 500) {
+          localStorage.clear();
+          window.location.href = "index.html";
+          return;
+        }
 
+        if (res.ok) {
+          challengesData = await res.json();
+        } else {
+          challengesData = [];
+        }
+        await loadUserSubmissions();
+        renderChallengeMap();
+      } catch (err) {
+        console.error("Challenges error:", err);
+        challengesData = [];
+        renderChallengeMap();
+      }
     function renderChallengeMap() {
       const svg = document.getElementById("mapSvg");
       const userLevel = parseInt(document.getElementById("level").textContent) || 1;

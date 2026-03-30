@@ -29,8 +29,15 @@ const userNameEl = document.getElementById("name") || document.getElementById("u
       const res = await fetch(`${API_URL}/auth/me`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      if (res.ok) {
-        const liveUser = await res.json();
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 500) {
+          localStorage.clear();
+          window.location.href = "index.html";
+          return;
+        }
+      } else {
+        const liveUserResp = await res.json();
+        const liveUser = liveUserResp.user;
         
         // Update user data locally just in case
         localStorage.setItem("user", JSON.stringify(liveUser));
