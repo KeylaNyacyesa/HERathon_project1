@@ -23,28 +23,28 @@
 
     <div class="page-header">
       <div>
-        <h2 class="page-title">👤 Your Profile</h2>
+        <h2 class="page-title"> Your Profile</h2>
         <p>Manage your HERathon adventure and account details.</p>
       </div>
     </div>
 
     <div class="card" id="profileView" style="display: none;">
-      <div class="card-title">✨ Account Overview</div>
+      <div class="card-title"> Account Overview</div>
 
       <div class="profile-card" id="userInfo">
         <p style="color:var(--text-faint);">Loading profile...</p>
       </div>
 
       <div class="btn-group">
-        <button onclick="toggleEditMode()" class="btn-secondary" style="width:auto; border-radius: var(--radius-pill);">✏️ Edit Profile</button>
-        <button id="manageCoursesBtn" onclick="window.location.href='select-courses.html'" class="btn-primary" style="width:auto; display:none; border-radius: var(--radius-pill);">📚 Manage Courses</button>
-        <button onclick="logout()" class="btn-danger" style="width:auto; border-radius: var(--radius-pill); border: 1px solid #ef4444; background: rgba(239,68,68,0.1); color: #ef4444;">🚪 Sign Out</button>
+        <button onclick="toggleEditMode()" class="btn-secondary" style="width:auto; border-radius: var(--radius-pill);"> Edit Profile</button>
+        <button id="manageCoursesBtn" onclick="window.location.href='select-courses.html'" class="btn-primary" style="width:auto; display:none; border-radius: var(--radius-pill);"> Manage Courses</button>
+        <button onclick="logout()" class="btn-danger" style="width:auto; border-radius: var(--radius-pill); border: 1px solid #ef4444; background: rgba(239,68,68,0.1); color: #ef4444;"> Sign Out</button>
       </div>
     </div>
 
     <!-- Edit Profile Section -->
     <div id="editProfileSection" class="card" style="display:none;">
-       <div class="card-title">✏️ Edit Profile Details</div>
+       <div class="card-title"> Edit Profile Details</div>
        <form id="editProfileForm" onsubmit="saveProfile(event)" style="display:flex; flex-direction:column;">
           
           <div class="form-group">
@@ -80,7 +80,7 @@
           </div>
 
           <div class="btn-group" style="margin-top: 1rem;">
-            <button type="submit" class="btn-primary" style="width:auto; border-radius: var(--radius-pill);">💾 Save Changes</button>
+            <button type="submit" class="btn-primary" style="width:auto; border-radius: var(--radius-pill);"> Save Changes</button>
             <button type="button" onclick="toggleEditMode()" class="btn-secondary" style="width:auto; border-radius: var(--radius-pill);">Cancel</button>
           </div>
        </form>
@@ -165,7 +165,7 @@
           </div>
           <div>
              <h4 style="color:var(--text-main); font-size:1rem; margin-bottom:0.4rem;">Gamification Stats</h4>
-             <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">⭐ ${user.points || 0} Points &nbsp; | &nbsp; ⚡ Level ${user.level || 1}</p>
+             <p style="color:var(--text-muted); font-size:0.9rem; margin:0;">⭐ ${user.points || 0} Points &nbsp; | &nbsp;  Level ${user.level || 1}</p>
           </div>
         </div>
 
@@ -251,7 +251,7 @@
           if(typeof showError === 'function') showError(err.message);
        } finally {
           submitBtn.disabled = false;
-          submitBtn.textContent = "💾 Save Changes";
+          submitBtn.textContent = " Save Changes";
        }
     }
 
@@ -266,9 +266,9 @@
 
   <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">✉️ Contact Us</a>
+    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> About Us</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Help</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Contact Us</a>
   </div>
   <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
     &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.  

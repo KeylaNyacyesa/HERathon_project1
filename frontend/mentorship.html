@@ -16,7 +16,7 @@
     
     <div class="page-header">
       <div>
-        <h2 class="page-title">🧠 Mentorship</h2>
+        <h2 class="page-title"> Mentorship</h2>
         <p>Connect with experienced mentors and track your mentorship journey.</p>
       </div>
     </div>
@@ -24,7 +24,7 @@
     <div class="dashboard-grid">
       <!-- Section 1 -->
       <div class="card" style="grid-column: span 2;" id="mentorsListCard">
-        <div class="card-title" id="primaryCardTitle">🌟 Available Mentors</div>
+        <div class="card-title" id="primaryCardTitle"> Available Mentors</div>
         <div id="mentorsList" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.5rem;">
           <p style="color:var(--text-faint);">Loading...</p>
         </div>
@@ -32,7 +32,7 @@
 
       <!-- Section 2 -->
       <div class="card" style="grid-column: span 2;" id="myMentorshipCard">
-        <div class="card-title" id="secondaryCardTitle">🤝 My Mentorships</div>
+        <div class="card-title" id="secondaryCardTitle"> My Mentorships</div>
         <div id="myMentorships" style="display:flex; flex-direction:column; gap: 1rem;">
           <p style="color:var(--text-faint);">Loading...</p>
         </div>
@@ -52,8 +52,8 @@
       if (!currentUser) return window.location.href = "index.html";
 
       if (currentUser.role === "mentor") {
-        document.getElementById("primaryCardTitle").innerHTML = "🔔 Pending Requests";
-        document.getElementById("secondaryCardTitle").innerHTML = "👨‍🎓 My Students";
+        document.getElementById("primaryCardTitle").innerHTML = " Pending Requests";
+        document.getElementById("secondaryCardTitle").innerHTML = "‍ My Students";
         loadMyMentorships(); // this alone handles both pending and students for mentors
       } else {
         loadMentors();
@@ -257,10 +257,10 @@
 
   <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">❓ Frequently Asked Questions</a>
-    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;">✉️ Contact Us</a>
+    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> About Us</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Help</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Frequently Asked Questions</a>
+    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;"> Contact Us</a>
   </div>
   <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
     &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.

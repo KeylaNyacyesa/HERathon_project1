@@ -3,11 +3,11 @@
   const currentPage = window.location.pathname.split('/').pop() || 'index.html';
 
   const navLinks = [
-    { href: 'dashboard.html', label: '🗺️ Hub', id: 'dashboard.html' },
-    { href: 'challenges.html', label: '⚔️ Challenges', id: 'challenges.html' },
-    { href: 'teams.html', label: '👥 Teams', id: 'teams.html' },
-    { href: 'mentorship.html', label: '🧠 Mentorship', id: 'mentorship.html' },
-    { href: 'scholarships.html', label: '🎓 Scholarships', id: 'scholarships.html' },
+    { href: 'dashboard.html', label: ' Hub', id: 'dashboard.html' },
+    { href: 'challenges.html', label: '⚔ Challenges', id: 'challenges.html' },
+    { href: 'teams.html', label: ' Teams', id: 'teams.html' },
+    { href: 'mentorship.html', label: ' Mentorship', id: 'mentorship.html' },
+    { href: 'scholarships.html', label: ' Scholarships', id: 'scholarships.html' },
   ];
 
   const isLoggedIn = !!localStorage.getItem('token');
@@ -32,7 +32,7 @@
   const headerHtml = `
     <header class="top-header" id="globalHeader">
       <a href="dashboard.html" class="header-brand">
-        🎮 <span>HERathon</span>
+         <span>HERathon</span>
       </a>
       <nav class="header-nav" aria-label="Main navigation">
         ${navLinksHtml}
@@ -50,8 +50,8 @@
     </header>
     <nav class="mobile-nav" id="mobileNav" aria-label="Mobile navigation">
       ${mobileLinksHtml}
-      <a href="profile.html">👤 Profile</a>
-      <button onclick="sharedLogout()" style="color:#fca5a5;">🚪 Sign out</button>
+      <a href="profile.html"> Profile</a>
+      <button onclick="sharedLogout()" style="color:#fca5a5;"> Sign out</button>
     </nav>
   `;
 

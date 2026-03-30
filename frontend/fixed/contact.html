@@ -14,7 +14,7 @@
       <a href="dashboard.html">← Dashboard</a>
       <button onclick="logout()">Logout</button>
     </nav>
-    <h1>📩 Contact Us</h1>
+    <h1> Contact Us</h1>
     <p style="text-align: center; color: var(--text-muted, #9ca3af); margin-bottom: 2rem; font-size: 1.1rem;">Our team does its best to get back to you in 72 hours.</p>
     <form id="contactForm" class="card">
       <label>
@@ -54,13 +54,13 @@
           body: JSON.stringify(data)
         });
         if (res.ok) {
-          document.getElementById("contactStatus").textContent = "✅ Message sent!";
+          document.getElementById("contactStatus").textContent = " Message sent!";
           document.getElementById("contactForm").reset();
         } else {
-          document.getElementById("contactStatus").textContent = "❌ Send failed";
+          document.getElementById("contactStatus").textContent = " Send failed";
         }
       } catch (err) {
-        document.getElementById("contactStatus").textContent = "❌ Error: " + err.message;
+        document.getElementById("contactStatus").textContent = " Error: " + err.message;
       }
     });
 
@@ -72,10 +72,10 @@
 
 <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">❓ Frequently Asked Questions</a>
-    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;">✉️ Contact Us</a>
+    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> About Us</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Help</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Frequently Asked Questions</a>
+    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;"> Contact Us</a>
   </div>
   <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
     &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.

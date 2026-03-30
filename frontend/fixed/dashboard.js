@@ -88,16 +88,16 @@ async function renderStudentDashboard() {
   const dashboardContent = document.getElementById("dashboardContent");
   const quickLinksHTML = `
     <div class="panel" style="margin-top: 2rem;">
-      <h3 style="color: var(--primary); margin-bottom: 1rem;">🚀 Quick Actions</h3>
+      <h3 style="color: var(--primary); margin-bottom: 1rem;"> Quick Actions</h3>
       <div class="nav-grid" style="margin-top: 0;">
         <a href="teams.html" class="nav-card">
-          <h3>👥 Teams</h3>
+          <h3> Teams</h3>
         </a>
         <a href="scholarships.html" class="nav-card" style="border-left: 4px solid var(--success);">
-          <h3 style="color: var(--success);">🎓 Scholarships</h3>
+          <h3 style="color: var(--success);"> Scholarships</h3>
         </a>
         <a href="mentorship.html" class="nav-card" style="border-left: 4px solid var(--warning);">
-          <h3 style="color: var(--warning);">🧑‍🏫 Mentors</h3>
+          <h3 style="color: var(--warning);">‍ Mentors</h3>
         </a>
       </div>
     </div>
@@ -218,9 +218,9 @@ async function loadStudentChallenges() {
   challenges.forEach(challenge => {
     const li = document.createElement("li");
     let statusIcon = "";
-    if (challenge.status === "completed") statusIcon = "✅";
-    else if (challenge.status === "locked") statusIcon = "🔒";
-    else statusIcon = "🔓";
+    if (challenge.status === "completed") statusIcon = "";
+    else if (challenge.status === "locked") statusIcon = "";
+    else statusIcon = "";
 
     li.innerHTML = `${statusIcon} ${challenge.title} (Lv${challenge.level}) 
       ${challenge.status !== "completed" && challenge.status !== "locked" ? `<button onclick="completeChallenge('${challenge._id}')">Complete</button>` : ''}`;
@@ -241,13 +241,13 @@ async function loadMySubmissions() {
     const gold = submissions.filter(s => s.medal === "gold").length;
     const silver = submissions.filter(s => s.medal === "silver").length;
     const bronze = submissions.filter(s => s.medal === "bronze").length;
-    medalsEl.innerHTML = `🥇${gold} 🥈${silver} 🥉${bronze}`;
+    medalsEl.innerHTML = `${gold} ${silver} ${bronze}`;
   }
 
   const list = document.getElementById("submissionList");
   list.innerHTML = "";
   submissions.forEach(sub => {
-    const medalIcon = sub.medal === "gold" ? "🥇" : sub.medal === "silver" ? "🥈" : sub.medal === "bronze" ? "🥉" : "⚪";
+    const medalIcon = sub.medal === "gold" ? "" : sub.medal === "silver" ? "" : sub.medal === "bronze" ? "" : "";
     const li = document.createElement("li");
     li.innerHTML = `
       <strong>${sub.challengeId?.title || 'Challenge'}</strong> 
@@ -306,9 +306,9 @@ async function renderMentorDashboard() {
   const dashboard = document.getElementById("dashboardContent");
   dashboard.innerHTML = `
     <div class="mentor-panel">
-      <h2>👨‍🏫 Mentor Dashboard</h2>
+      <h2>‍ Mentor Dashboard</h2>
       <div class="mentor-quick-links">
-        <a href="submissions-review.html" class="btn-link">📋 Review Student Submissions</a>
+        <a href="submissions-review.html" class="btn-link"> Review Student Submissions</a>
       </div>
       
       <div class="mentor-stats">

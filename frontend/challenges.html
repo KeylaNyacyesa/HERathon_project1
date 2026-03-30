@@ -27,7 +27,7 @@
     <!-- Page header -->
     <div class="page-header">
       <div>
-        <h2 class="page-title">⚔️ Challenge Map</h2>
+        <h2 class="page-title">⚔ Challenge Map</h2>
         <p>Complete challenges to level up and unlock rewards.</p>
       </div>
       <button onclick="loadChallenges()" class="btn btn-ghost btn-sm">↻ Refresh</button>
@@ -198,7 +198,7 @@
           statusIcon.setAttribute("fill", "#fff");
           statusIcon.setAttribute("font-size", "20");
           statusIcon.setAttribute("pointer-events", "none");
-          statusIcon.textContent = "✅";
+          statusIcon.textContent = "";
           group.appendChild(statusIcon);
         }
 
@@ -211,7 +211,7 @@
           medalText.setAttribute("font-size", "18");
           medalText.setAttribute("font-weight", "bold");
           medalText.setAttribute("pointer-events", "none");
-          medalText.textContent = medal === "gold" ? "🥇" : medal === "silver" ? "🥈" : "🥉";
+          medalText.textContent = medal === "gold" ? "" : medal === "silver" ? "" : "";
           group.appendChild(medalText);
         }
 
@@ -245,7 +245,7 @@
           <h3>${challenge.title}</h3>
           <span class="badge badge-primary">Level ${challenge.level}</span>
           <p style="color:var(--text-muted); margin-top:0.5rem;">${challenge.description || 'Complete this challenge to earn 50 XP!'}</p>
-          ${challenge.deadline ? `<p style="font-size:0.85rem; color:var(--text-faint);">⏰ Deadline: ${new Date(challenge.deadline).toLocaleDateString()}</p>` : ''}
+          ${challenge.deadline ? `<p style="font-size:0.85rem; color:var(--text-faint);"> Deadline: ${new Date(challenge.deadline).toLocaleDateString()}</p>` : ''}
           
           ${isSimple ? `
             <label>Your Answer<input id="modalSimpleAnswer" placeholder="Type your answer here..."></label>
@@ -255,7 +255,7 @@
           `}
 
           <div class="modal-buttons">
-            <button onclick="submitChallenge('${challenge._id}', ${isSimple})" class="btn-success">🚀 Submit</button>
+            <button onclick="submitChallenge('${challenge._id}', ${isSimple})" class="btn-success"> Submit</button>
             <button onclick="document.querySelector('.challenge-modal').remove()" class="btn-ghost">Cancel</button>
           </div>
         </div>
@@ -298,9 +298,9 @@
 
         if (res.ok) {
           if (data.autoGraded) {
-            showSuccess("Challenge auto-graded! You earned points 🌟");
+            showSuccess("Challenge auto-graded! You earned points ");
           } else {
-            showSuccess("Submission sent! Awaiting mentor review ✨");
+            showSuccess("Submission sent! Awaiting mentor review ");
           }
           document.querySelector(".challenge-modal").remove();
           loadChallenges();
@@ -316,10 +316,10 @@
 
   <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">❓ Frequently Asked Questions</a>
-    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;">✉️ Contact Us</a>
+    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> About Us</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Help</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Frequently Asked Questions</a>
+    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;"> Contact Us</a>
   </div>
   <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
     &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.

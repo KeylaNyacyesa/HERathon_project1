@@ -71,8 +71,8 @@
                 </span>
                 ${isPending ? `
                   <div style="display:flex; gap:0.5rem; justify-content:flex-end;">
-                     <button class="btn-success" onclick="updateSubmissionStatus('${s._id}', 'approved')">✅ Approve</button>
-                     <button class="btn-danger" style="background:transparent; border:1px solid #ef4444; color:#ef4444; cursor:pointer; padding:0.4rem 1rem; border-radius:var(--radius-sm); font-weight:600;" onclick="updateSubmissionStatus('${s._id}', 'rejected')">❌ Reject</button>
+                     <button class="btn-success" onclick="updateSubmissionStatus('${s._id}', 'approved')"> Approve</button>
+                     <button class="btn-danger" style="background:transparent; border:1px solid #ef4444; color:#ef4444; cursor:pointer; padding:0.4rem 1rem; border-radius:var(--radius-sm); font-weight:600;" onclick="updateSubmissionStatus('${s._id}', 'rejected')"> Reject</button>
                   </div>
                 ` : ''}
               </div>

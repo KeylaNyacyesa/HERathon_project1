@@ -78,7 +78,7 @@ async function getChallenges() {
       const li = document.createElement("li");
 
       if (challenge.level > userLevel) {
-        li.textContent = `🔒 ${challenge.title} (Level ${challenge.level})`;
+        li.textContent = ` ${challenge.title} (Level ${challenge.level})`;
         li.style.opacity = "0.5";
       } else {
         li.innerHTML = `

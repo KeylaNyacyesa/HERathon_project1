@@ -16,11 +16,11 @@
       <button onclick="logout()">Logout</button>
     </nav>
     
-    <h1>🎓 Scholarship Opportunities</h1>
+    <h1> Scholarship Opportunities</h1>
     <p style="text-align: center; margin-bottom: 2rem;">Level up your skills to unlock exclusive STEM scholarships and grants.</p>
     
     <div id="scholarshipGate" class="gamification-panel" style="display: none;">
-      <h3 style="color: var(--danger);">🔒 Level Too Low</h3>
+      <h3 style="color: var(--danger);"> Level Too Low</h3>
       <p>You must reach <span style="font-weight: 800;">Level 3</span> to apply for scholarships.</p>
       <p>Current Level: <span id="currentLevelSpan" style="color: var(--danger);">1</span></p>
     </div>
@@ -88,7 +88,7 @@
         return `
           <div class="card" style="${isLocked ? 'opacity: 0.6;' : ''}">
             <h3 style="color: var(--primary); margin-bottom: 0.5rem;">${sch.title} 
-              ${isLocked ? '🔒' : '🔓'}
+              ${isLocked ? '' : ''}
             </h3>
             <p style="font-weight: 600; color: var(--text-main);">${sch.provider} • <span style="color: var(--success);">${sch.amount}</span></p>
             <p style="margin: 1rem 0; font-size: 0.95rem;">${sch.description}</p>
@@ -105,7 +105,7 @@
 
     function applyScholarship(id) {
       // Mock application
-      showSuccess("Application submitted successfully! Good luck! 🌟");
+      showSuccess("Application submitted successfully! Good luck! ");
     }
 
     function logout() {
@@ -116,10 +116,10 @@
 
 <footer style="text-align: center; padding: 2.5rem 1rem; margin-top: 3rem; background: var(--bg-dark, #0f172a); border-top: 1px solid var(--border-subtle, #374151); margin-top: auto;">
   <div style="margin-bottom: 1.5rem; display: flex; justify-content: center; gap: 1rem; flex-wrap: wrap;">
-    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">ℹ️ About Us</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">💡 Help</a>
-    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);">❓ Frequently Asked Questions</a>
-    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;">✉️ Contact Us</a>
+    <a href="about.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> About Us</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Help</a>
+    <a href="qa.html" style="color: #ffffff; background: var(--bg-card, #1e293b); border: 1px solid var(--primary-light, #818cf8); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.2);"> Frequently Asked Questions</a>
+    <a href="contact.html" style="color: #ffffff; background: linear-gradient(135deg, var(--primary, #6366f1), var(--accent, #ec4899)); padding: 0.5rem 1.25rem; border-radius: 9999px; text-decoration: none; font-size: 0.95rem; font-weight: 600; box-shadow: 0 4px 6px rgba(0,0,0,0.3); border: none;"> Contact Us</a>
   </div>
   <div style="color: var(--text-faint, #6b7280); font-size: 0.85rem;">
     &copy; 2026 HERathon. All rights reserved. Built with passion and purpose.
